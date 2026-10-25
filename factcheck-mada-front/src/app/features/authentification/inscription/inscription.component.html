@@ -1,0 +1,126 @@
+<section class="authentification">
+  <div class="authentification__presentation">
+    <span class="authentification__marque">FC</span>
+    <p class="authentification__surtitre">Rejoindre la rédaction</p>
+    <h1>Créer un compte</h1>
+    <p>
+      Centralisez les rumeurs suivies, documentez les publications sources et
+      produisez des fiches de vérification traçables.
+    </p>
+    <div class="authentification__principe">
+      <strong>Rôle attribué</strong>
+      <p>
+        Pour cette version, le backend attribue automatiquement le rôle
+        <strong>Journaliste</strong>. Les autres rôles sont gérés depuis
+        l’administration Django.
+      </p>
+    </div>
+  </div>
+
+  <div class="authentification__carte">
+    <h2>Inscription</h2>
+    <p class="texte-secondaire">Créez votre accès journaliste.</p>
+
+    @if (messagesErreur().length > 0) {
+      <app-message-erreur [messages]="messagesErreur()" type="erreur" />
+    }
+
+    <form class="formulaire" [formGroup]="formulaire" (ngSubmit)="envoyer()">
+      <div class="champ">
+        <label for="nom_utilisateur">Nom d’utilisateur</label>
+        <input
+          id="nom_utilisateur"
+          type="text"
+          formControlName="nom_utilisateur"
+          autocomplete="username"
+          placeholder="ex. ranja"
+        />
+        @if (nomUtilisateur.touched && nomUtilisateur.hasError('required')) {
+          <span class="champ__erreur">Le nom d’utilisateur est obligatoire.</span>
+        }
+        @if (nomUtilisateur.touched && nomUtilisateur.hasError('minlength')) {
+          <span class="champ__erreur">Le nom doit contenir au moins 3 caractères.</span>
+        }
+      </div>
+
+      <div class="champ">
+        <label for="email">Adresse e-mail</label>
+        <input
+          id="email"
+          type="email"
+          formControlName="email"
+          autocomplete="email"
+          placeholder="vous@exemple.mg"
+        />
+        @if (email.touched && email.hasError('required')) {
+          <span class="champ__erreur">L’adresse e-mail est obligatoire.</span>
+        }
+        @if (email.touched && email.hasError('email')) {
+          <span class="champ__erreur">L’adresse e-mail n’est pas valide.</span>
+        }
+      </div>
+
+      <div class="champ">
+        <label for="redaction">Rédaction (facultatif)</label>
+        <input
+          id="redaction"
+          type="text"
+          formControlName="redaction"
+          autocomplete="organization"
+          placeholder="ex. Rédaction Antananarivo"
+        />
+      </div>
+
+      <div class="champ">
+        <label for="mot_de_passe">Mot de passe</label>
+        <input
+          id="mot_de_passe"
+          type="password"
+          formControlName="mot_de_passe"
+          autocomplete="new-password"
+          placeholder="8 caractères minimum"
+        />
+        @if (motDePasse.touched && motDePasse.hasError('required')) {
+          <span class="champ__erreur">Le mot de passe est obligatoire.</span>
+        }
+        @if (motDePasse.touched && motDePasse.hasError('minlength')) {
+          <span class="champ__erreur">Le mot de passe doit contenir au moins 8 caractères.</span>
+        }
+      </div>
+
+      <div class="champ">
+        <label for="confirmation_mot_de_passe">Confirmer le mot de passe</label>
+        <input
+          id="confirmation_mot_de_passe"
+          type="password"
+          formControlName="confirmation_mot_de_passe"
+          autocomplete="new-password"
+        />
+        @if (
+          confirmationMotDePasse.touched &&
+          formulaire.hasError('motsDePasseDifferents')
+        ) {
+          <span class="champ__erreur">Les deux mots de passe ne correspondent pas.</span>
+        }
+      </div>
+
+      <div class="authentification__role">
+        <span>Rôle du compte</span>
+        <strong>Journaliste</strong>
+      </div>
+
+      <button class="bouton" type="submit" [disabled]="chargement()">
+        {{ chargement() ? 'Création…' : 'Créer mon compte' }}
+      </button>
+    </form>
+
+    @if (chargement()) {
+      <app-chargeur message="Création du compte…" />
+    }
+
+    <p class="authentification__lien">
+      Déjà un compte ?
+      <a routerLink="/connexion">Se connecter</a>
+    </p>
+  </div>
+</section>

@@ -1,0 +1,74 @@
+<section class="authentification">
+  <div class="authentification__presentation">
+    <span class="authentification__marque">FC</span>
+    <p class="authentification__surtitre">Plateforme d’investigation</p>
+    <h1>FactCheck Mada</h1>
+    <p>
+      Documentez la propagation d’une rumeur, identifiez sa première occurrence
+      publique et préparez une fiche de vérification pour la rédaction.
+    </p>
+    <div class="authentification__principe">
+      <strong>Principe de prudence</strong>
+      <p>
+        L’application ne déclare jamais une information vraie ou fausse. Elle
+        fournit des indices et des alertes ; la décision finale reste humaine.
+      </p>
+    </div>
+  </div>
+
+  <div class="authentification__carte">
+    <h2>Connexion</h2>
+    <p class="texte-secondaire">Accédez à votre espace de travail.</p>
+
+    @if (messagesErreur().length > 0) {
+      <app-message-erreur [messages]="messagesErreur()" type="erreur" />
+    }
+
+    <form class="formulaire" [formGroup]="formulaire" (ngSubmit)="envoyer()">
+      <div class="champ">
+        <label for="nom_utilisateur">Nom d’utilisateur</label>
+        <input
+          id="nom_utilisateur"
+          type="text"
+          formControlName="nom_utilisateur"
+          autocomplete="username"
+          placeholder="demo"
+        />
+        @if (nomUtilisateur.touched && nomUtilisateur.hasError('required')) {
+          <span class="champ__erreur">Le nom d’utilisateur est obligatoire.</span>
+        }
+      </div>
+
+      <div class="champ">
+        <label for="mot_de_passe">Mot de passe</label>
+        <input
+          id="mot_de_passe"
+          type="password"
+          formControlName="mot_de_passe"
+          autocomplete="current-password"
+          placeholder="Votre mot de passe"
+        />
+        @if (motDePasse.touched && motDePasse.hasError('required')) {
+          <span class="champ__erreur">Le mot de passe est obligatoire.</span>
+        }
+      </div>
+
+      <button class="bouton" type="submit" [disabled]="chargement()">
+        {{ chargement() ? 'Connexion…' : 'Se connecter' }}
+      </button>
+    </form>
+
+    @if (chargement()) {
+      <app-chargeur message="Vérification des identifiants…" />
+    }
+
+    <p class="authentification__lien">
+      Pas encore de compte ?
+      <a routerLink="/inscription">Créer un compte journaliste</a>
+    </p>
+
+    <p class="authentification__demo">
+      Démonstration : <strong>demo</strong> / <strong>Demo1234!</strong>
+    </p>
+  </div>
+</section>

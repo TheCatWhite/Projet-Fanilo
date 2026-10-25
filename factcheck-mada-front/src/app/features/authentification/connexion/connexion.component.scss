@@ -1,0 +1,101 @@
+.authentification {
+  display: grid;
+  grid-template-columns: minmax(260px, 1fr) minmax(320px, 430px);
+  align-items: center;
+  gap: clamp(1.5rem, 6vw, 5rem);
+  width: min(1080px, calc(100% - 2rem));
+  min-height: calc(100vh - 4rem);
+  margin: 0 auto;
+  padding: 2rem 0;
+}
+
+.authentification__presentation {
+  max-width: 34rem;
+}
+
+.authentification__marque {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
+  height: 3rem;
+  margin-bottom: 1.2rem;
+  border-radius: 0.85rem;
+  background: var(--couleur-bleu-fonce);
+  color: #fff;
+  font-weight: 800;
+}
+
+.authentification__surtitre {
+  margin-bottom: 0.4rem;
+  color: var(--couleur-rouge-doux);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+}
+
+.authentification__presentation h1 {
+  margin-bottom: 0.8rem;
+  font-size: clamp(2rem, 5vw, 3.3rem);
+}
+
+.authentification__presentation > p {
+  color: var(--couleur-texte-secondaire);
+  font-size: 1rem;
+  line-height: 1.65;
+}
+
+.authentification__principe {
+  margin-top: 1.5rem;
+  border-left: 4px solid var(--couleur-vert);
+  padding: 0.8rem 1rem;
+  background: var(--couleur-vert-tres-clair);
+  color: var(--couleur-vert-fonce);
+  font-size: 0.85rem;
+}
+
+.authentification__principe p {
+  margin: 0.25rem 0 0;
+}
+
+.authentification__carte {
+  border: 1px solid var(--couleur-bordure);
+  border-radius: 0.9rem;
+  padding: clamp(1.2rem, 4vw, 2rem);
+  background: #fff;
+  box-shadow: var(--ombre);
+}
+
+.authentification__carte h2 {
+  margin-bottom: 0.2rem;
+}
+
+.authentification__lien,
+.authentification__demo {
+  margin: 1rem 0 0;
+  color: var(--couleur-texte-secondaire);
+  font-size: 0.84rem;
+  text-align: center;
+}
+
+.authentification__lien a {
+  font-weight: 700;
+}
+
+.authentification__demo {
+  margin-top: 0.6rem;
+  font-size: 0.76rem;
+}
+
+@media (max-width: 780px) {
+  .authentification {
+    grid-template-columns: 1fr;
+    min-height: auto;
+    padding: 1.2rem 0 2rem;
+  }
+
+  .authentification__presentation {
+    display: none;
+  }
+}
