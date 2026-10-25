@@ -295,15 +295,36 @@ PDF valide (`%PDF`) et PNG 1080 × 1080.
 
 ---
 
+## Documentation interactive
+
+L'API est documentée automatiquement avec `drf-spectacular` :
+
+```bash
+python manage.py spectacular --file /tmp/factcheck-openapi.yaml --validate
+python manage.py runserver
+```
+
+- Swagger UI : `http://localhost:8000/api/docs/`
+- Redoc : `http://localhost:8000/api/redoc/`
+- Schéma OpenAPI : `http://localhost:8000/api/schema/`
+
+Dans Swagger, appeler `POST /api/authentification/connexion/`, copier
+`jeton_acces`, cliquer sur **Authorize** et coller le jeton. La documentation
+peut être coupée en production avec `DOCUMENTATION_ACTIVE=False`.
+
+---
+
 ## Vérification finale
 
 ```bash
 python manage.py check
 python manage.py makemigrations --check --dry-run
 python manage.py test investigation -v 2
+python manage.py spectacular --file /tmp/factcheck-openapi.yaml --validate
 python manage.py seed_donnees_demo
 ```
 
 Le scénario complet, de l'inscription aux exports, est détaillé dans
 `docs/SCENARIO_TEST.md`. La collection Postman correspondante est dans
-`docs/collection_postman.json`.
+`docs/collection_postman.json`. L'historique des décisions est dans
+`docs/HISTORIQUE.md`.

@@ -14,7 +14,15 @@ from django.db import transaction
 from django.db.models import Count, Q
 from django.http import FileResponse
 from django.utils.dateparse import parse_date
+from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import (
+    OpenApiParameter,
+    OpenApiResponse,
+    extend_schema,
+    extend_schema_view,
+)
 from rest_framework import status
+from rest_framework.authentication import BaseAuthentication
 from rest_framework.exceptions import NotFound, ValidationError
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.permissions import AllowAny
@@ -29,6 +37,18 @@ from investigation.models import (
 )
 from investigation.pagination import PaginationFrancaise
 from investigation.permissions import est_administrateur
+from investigation.schemas import (
+    ReponseAnalyseCompteSerializer,
+    ReponseAnalyseTexteSerializer,
+    ReponseArbrePropagationSerializer,
+    ReponseAuthentificationSerializer,
+    ReponsePublicationSerializer,
+    ReponseRafraichissementSerializer,
+    ReponseRapportGenereSerializer,
+    ReponseRumeurSerializer,
+    ReponseSanteSerializer,
+    ReponseTableauDeBordSerializer,
+)
 from investigation.serializers import (
     AlerteCompteSerializer,
     AlerteTexteSerializer,
@@ -64,6 +84,77 @@ from investigation.services.service_similarite import (
 )
 
 MESSAGE_DOUBLON = "Une rumeur similaire a déjà été enregistrée."
+
+
+class AuthentificationConnexion(BaseAuthentication):
+    """Ignore un éventuel jeton obsolète sur la route de connexion.
+
+    Le navigateur peut conserver l'en-tête ``Authorization`` après une session
+    précédente. La connexion doit rester possible avec les identifiants saisis,
+    tout en conservant une réponse 401 lorsque les identifiants sont faux.
+    """
+
+    def authenticate(self, request):
+        return None
+
+    def authenticate_header(self, request):
+        return 'Bearer realm="api"'
+
+
+# Paramètres de filtrage documentés pour la liste des rumeurs.
+PARAMETRES_LISTE_RUMEURS = [
+    OpenApiParameter(
+        name="statut",
+        type=OpenApiTypes.STR,
+        location=OpenApiParameter.QUERY,
+        required=False,
+        enum=list(Rumeur.Statut.values),
+        description="Filtrer par statut de la rumeur.",
+    ),
+    OpenApiParameter(
+        name="titre",
+        type=OpenApiTypes.STR,
+        location=OpenApiParameter.QUERY,
+        required=False,
+        description="Recherche partielle et insensible à la casse sur le titre.",
+    ),
+    OpenApiParameter(
+        name="recherche",
+        type=OpenApiTypes.STR,
+        location=OpenApiParameter.QUERY,
+        required=False,
+        description="Recherche dans le titre et le contenu.",
+    ),
+    OpenApiParameter(
+        name="date_debut",
+        type=OpenApiTypes.DATE,
+        location=OpenApiParameter.QUERY,
+        required=False,
+        description="Date de création minimale (AAAA-MM-JJ).",
+    ),
+    OpenApiParameter(
+        name="date_fin",
+        type=OpenApiTypes.DATE,
+        location=OpenApiParameter.QUERY,
+        required=False,
+        description="Date de création maximale (AAAA-MM-JJ).",
+    ),
+    OpenApiParameter(
+        name="tri",
+        type=OpenApiTypes.STR,
+        location=OpenApiParameter.QUERY,
+        required=False,
+        enum=[
+            "cree_le",
+            "-cree_le",
+            "titre",
+            "-titre",
+            "statut",
+            "-statut",
+        ],
+        description="Champ de tri ; le préfixe « - » inverse l'ordre.",
+    ),
+]
 
 
 # ---------------------------------------------------------------------------
@@ -154,6 +245,13 @@ class SanteAPIView(APIView):
     authentication_classes = []
     throttle_classes = []
 
+    @extend_schema(
+        summary="Vérifier la disponibilité de l'API",
+        description="Endpoint public, sans authentification.",
+        responses={200: ReponseSanteSerializer},
+        tags=["Santé"],
+        auth=[],
+    )
     def get(self, request):
         return Response({"statut": "ok", "service": "API FactCheck Mada"})
 
@@ -169,6 +267,20 @@ class InscriptionAPIView(APIView):
     authentication_classes = []
     throttle_scope = "authentification"
 
+    @extend_schema(
+        summary="Créer un compte journaliste",
+        description=(
+            "Inscription publique. Le rôle est toujours forcé à « journaliste ». "
+            "La réponse contient les jetons JWT et le profil créé."
+        ),
+        request=InscriptionSerializer,
+        responses={
+            201: ReponseAuthentificationSerializer,
+            400: OpenApiResponse(description="Données invalides ou compte en doublon."),
+        },
+        tags=["Authentification"],
+        auth=[],
+    )
     def post(self, request):
         serializer = InscriptionSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -184,8 +296,20 @@ class ConnexionAPIView(APIView):
     """Authentifie un journaliste et retourne ses jetons JWT."""
 
     permission_classes = [AllowAny]
+    authentication_classes = [AuthentificationConnexion]
     throttle_scope = "authentification"
 
+    @extend_schema(
+        summary="Se connecter",
+        description="Authentifie un journaliste et retourne une paire de jetons JWT.",
+        request=ConnexionSerializer,
+        responses={
+            200: ReponseAuthentificationSerializer,
+            401: OpenApiResponse(description="Identifiants invalides ou compte désactivé."),
+        },
+        tags=["Authentification"],
+        auth=[],
+    )
     def post(self, request):
         serializer = ConnexionSerializer(
             data=request.data,
@@ -207,6 +331,20 @@ class RafraichirTokenAPIView(APIView):
     authentication_classes = []
     throttle_scope = "authentification"
 
+    @extend_schema(
+        summary="Rafraîchir le jeton d'accès",
+        description=(
+            "Accepte le champ « jeton_rafraichissement » ou son alias "
+            "« refresh ». Retourne uniquement un nouveau jeton d'accès."
+        ),
+        request=RafraichirTokenSerializer,
+        responses={
+            200: ReponseRafraichissementSerializer,
+            400: OpenApiResponse(description="Jeton manquant, invalide ou expiré."),
+        },
+        tags=["Authentification"],
+        auth=[],
+    )
     def post(self, request):
         serializer = RafraichirTokenSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -222,6 +360,11 @@ class RafraichirTokenAPIView(APIView):
 class ProfilAPIView(APIView):
     """Retourne le profil du journaliste connecté."""
 
+    @extend_schema(
+        summary="Consulter son profil",
+        responses={200: JournalisteProfilSerializer},
+        tags=["Authentification"],
+    )
     def get(self, request):
         return Response(
             JournalisteProfilSerializer(
@@ -235,6 +378,36 @@ class ProfilAPIView(APIView):
 # Rumeurs
 # ---------------------------------------------------------------------------
 
+@extend_schema_view(
+    get=extend_schema(
+        summary="Lister les rumeurs",
+        description=(
+            "Retourne les rumeurs du journaliste connecté. Un administrateur "
+            "voit l'ensemble des rumeurs."
+        ),
+        parameters=PARAMETRES_LISTE_RUMEURS,
+        responses={
+            200: RumeurListeSerializer(many=True),
+            400: OpenApiResponse(description="Paramètre de filtre ou de tri invalide."),
+        },
+        tags=["Rumeurs"],
+    ),
+    post=extend_schema(
+        summary="Créer une rumeur",
+        description=(
+            "Crée une rumeur après recherche d'empreinte exacte et de similarité. "
+            "Si un doublon existe, la rumeur existante est retournée avec "
+            "« cree: false » et le statut HTTP 200."
+        ),
+        request=RumeurEcritureSerializer,
+        responses={
+            201: ReponseRumeurSerializer,
+            200: ReponseRumeurSerializer,
+            400: OpenApiResponse(description="Contenu invalide."),
+        },
+        tags=["Rumeurs"],
+    ),
+)
 class RumeurListCreateView(ListCreateAPIView):
     """Liste les rumeurs du journaliste et gère la création avec doublons."""
 
@@ -359,6 +532,38 @@ class RumeurListCreateView(ListCreateAPIView):
         )
 
 
+@extend_schema_view(
+    get=extend_schema(
+        summary="Consulter une rumeur",
+        responses={
+            200: RumeurDetailSerializer,
+            404: OpenApiResponse(description="Rumeur introuvable ou accès non autorisé."),
+        },
+        tags=["Rumeurs"],
+    ),
+    patch=extend_schema(
+        summary="Modifier partiellement une rumeur",
+        description=(
+            "Seuls le titre, le contenu et le statut sont modifiables. Une "
+            "modification du contenu relance la détection de doublon."
+        ),
+        request=RumeurModificationSerializer,
+        responses={
+            200: RumeurDetailSerializer,
+            400: OpenApiResponse(description="Données invalides ou contenu similaire existant."),
+            404: OpenApiResponse(description="Rumeur introuvable ou accès non autorisé."),
+        },
+        tags=["Rumeurs"],
+    ),
+    delete=extend_schema(
+        summary="Supprimer une rumeur",
+        responses={
+            204: OpenApiResponse(description="Rumeur supprimée avec ses fichiers médias."),
+            404: OpenApiResponse(description="Rumeur introuvable ou accès non autorisé."),
+        },
+        tags=["Rumeurs"],
+    ),
+)
 class RumeurDetailView(RetrieveUpdateDestroyAPIView):
     """Consultation, modification et suppression d'une rumeur."""
 
@@ -431,6 +636,15 @@ class RumeurDetailView(RetrieveUpdateDestroyAPIView):
 class PublicationListCreateView(APIView):
     """Liste chronologique et création analysée d'une publication source."""
 
+    @extend_schema(
+        summary="Lister les publications d'une rumeur",
+        description="Retourne les publications par date croissante, avec les alertes de compte.",
+        responses={
+            200: PublicationSourceSerializer(many=True),
+            404: OpenApiResponse(description="Rumeur introuvable ou accès non autorisé."),
+        },
+        tags=["Publications et propagation"],
+    )
     def get(self, request, rumeur_id: int):
         rumeur = _obtenir_rumeur(request, rumeur_id)
         publications = rumeur.publications.prefetch_related(
@@ -444,6 +658,21 @@ class PublicationListCreateView(APIView):
             ).data
         )
 
+    @extend_schema(
+        summary="Ajouter une publication source",
+        description=(
+            "Saisie manuelle d'une publication publique, avec capture d'écran "
+            "optionnelle. La création déclenche la détection de la première "
+            "publication, les liens de propagation et les analyses compte/texte."
+        ),
+        request=PublicationSourceSerializer,
+        responses={
+            201: ReponsePublicationSerializer,
+            400: OpenApiResponse(description="Données ou capture d'écran invalides."),
+            404: OpenApiResponse(description="Rumeur introuvable ou accès non autorisé."),
+        },
+        tags=["Publications et propagation"],
+    )
     def post(self, request, rumeur_id: int):
         rumeur = _obtenir_rumeur(request, rumeur_id)
         serializer = PublicationSourceSerializer(
@@ -502,6 +731,18 @@ class PublicationListCreateView(APIView):
 class ArbrePropagationView(APIView):
     """Retourne l'arbre de propagation prêt à être affiché par React."""
 
+    @extend_schema(
+        summary="Construire l'arbre de propagation",
+        description=(
+            "Retourne les nœuds, les liens orientés, la première publication "
+            "détectée et les statistiques de diffusion."
+        ),
+        responses={
+            200: ReponseArbrePropagationSerializer,
+            404: OpenApiResponse(description="Rumeur introuvable ou accès non autorisé."),
+        },
+        tags=["Publications et propagation"],
+    )
     def get(self, request, rumeur_id: int):
         rumeur = _obtenir_rumeur(request, rumeur_id)
         return Response(construire_arbre_propagation(rumeur))
@@ -510,6 +751,19 @@ class ArbrePropagationView(APIView):
 class AnalyserCompteView(APIView):
     """Relance l'analyse des indices du compte d'une publication."""
 
+    @extend_schema(
+        request=None,
+        summary="Relancer l'analyse d'un compte",
+        description=(
+            "Remplace les alertes automatiques du compte, sans dupliquer les "
+            "alertes manuelles de type « autre »."
+        ),
+        responses={
+            200: ReponseAnalyseCompteSerializer,
+            404: OpenApiResponse(description="Publication introuvable ou accès non autorisé."),
+        },
+        tags=["Analyses"],
+    )
     def post(self, request, publication_id: int):
         publication = _obtenir_publication(request, publication_id)
         alertes = analyser_compte(publication)
@@ -526,6 +780,19 @@ class AnalyserCompteView(APIView):
 class AnalyserTexteView(APIView):
     """Relance l'analyse des indices présents dans le texte."""
 
+    @extend_schema(
+        request=None,
+        summary="Relancer l'analyse du texte",
+        description=(
+            "Remplace les alertes automatiques de texte, sans dupliquer les "
+            "alertes manuelles de type « autre »."
+        ),
+        responses={
+            200: ReponseAnalyseTexteSerializer,
+            404: OpenApiResponse(description="Rumeur introuvable ou accès non autorisé."),
+        },
+        tags=["Analyses"],
+    )
     def post(self, request, rumeur_id: int):
         rumeur = _obtenir_rumeur(request, rumeur_id)
         resultat = analyser_texte(rumeur)
@@ -549,6 +816,19 @@ class AnalyserTexteView(APIView):
 class GenererRapportView(APIView):
     """Génère ou met à jour la fiche de vérification."""
 
+    @extend_schema(
+        request=None,
+        summary="Générer ou actualiser un rapport",
+        description=(
+            "Relance les analyses, calcule le score de crédibilité et crée ou "
+            "met à jour le rapport unique de la rumeur."
+        ),
+        responses={
+            200: ReponseRapportGenereSerializer,
+            404: OpenApiResponse(description="Rumeur introuvable ou accès non autorisé."),
+        },
+        tags=["Rapports"],
+    )
     def post(self, request, rumeur_id: int):
         rumeur = _obtenir_rumeur(request, rumeur_id)
         rapport = generer_rapport(rumeur)
@@ -566,6 +846,14 @@ class GenererRapportView(APIView):
 class RapportDetailView(APIView):
     """Retourne le rapport existant d'une rumeur."""
 
+    @extend_schema(
+        summary="Consulter un rapport",
+        responses={
+            200: RapportVerificationSerializer,
+            404: OpenApiResponse(description="Aucun rapport généré ou accès non autorisé."),
+        },
+        tags=["Rapports"],
+    )
     def get(self, request, rumeur_id: int):
         rumeur = _obtenir_rumeur(request, rumeur_id)
         rapport = RapportVerification.objects.filter(rumeur=rumeur).first()
@@ -584,6 +872,20 @@ class RapportDetailView(APIView):
 class RapportPdfView(APIView):
     """Génère et télécharge le PDF du rapport."""
 
+    @extend_schema(
+        summary="Télécharger le rapport en PDF",
+        description="Génère le PDF à la demande avec ReportLab.",
+        responses={
+            200: OpenApiResponse(
+                response=OpenApiTypes.BINARY,
+                description="Fichier PDF du rapport.",
+            ),
+            404: OpenApiResponse(description="Rumeur introuvable ou accès non autorisé."),
+            500: OpenApiResponse(description="Échec de génération du fichier."),
+            501: OpenApiResponse(description="ReportLab n'est pas installé."),
+        },
+        tags=["Rapports"],
+    )
     def get(self, request, rumeur_id: int):
         rumeur = _obtenir_rumeur(request, rumeur_id)
         try:
@@ -616,6 +918,20 @@ class RapportPdfView(APIView):
 class RapportImageView(APIView):
     """Génère et télécharge la carte PNG de synthèse."""
 
+    @extend_schema(
+        summary="Télécharger la synthèse en image PNG",
+        description="Génère l'image 1080 × 1080 à la demande avec Pillow.",
+        responses={
+            200: OpenApiResponse(
+                response=OpenApiTypes.BINARY,
+                description="Image PNG de synthèse.",
+            ),
+            404: OpenApiResponse(description="Rumeur introuvable ou accès non autorisé."),
+            500: OpenApiResponse(description="Échec de génération de l'image."),
+            501: OpenApiResponse(description="Pillow n'est pas installé."),
+        },
+        tags=["Rapports"],
+    )
     def get(self, request, rumeur_id: int):
         rumeur = _obtenir_rumeur(request, rumeur_id)
         try:
@@ -652,6 +968,15 @@ class RapportImageView(APIView):
 class TableauDeBordView(APIView):
     """Statistiques agrégées du périmètre du journaliste connecté."""
 
+    @extend_schema(
+        summary="Consulter les statistiques du tableau de bord",
+        description=(
+            "Agrège les rumeurs, rapports, publications et plateformes du "
+            "périmètre autorisé de l'utilisateur connecté."
+        ),
+        responses={200: ReponseTableauDeBordSerializer},
+        tags=["Tableau de bord"],
+    )
     def get(self, request):
         rumeurs = _rumeurs_visibles(request.user)
         rapports = RapportVerification.objects.filter(rumeur__in=rumeurs)

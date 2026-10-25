@@ -797,6 +797,48 @@ class RapportTests(BaseAPITest):
 
 
 # ---------------------------------------------------------------------------
+# Documentation OpenAPI
+# ---------------------------------------------------------------------------
+
+class DocumentationTests(APITestCase):
+    """Vérifie que la documentation interactive est exposée et cohérente."""
+
+    def setUp(self):
+        cache.clear()
+
+    def test_schema_openapi_est_accessible_et_contient_les_routes(self):
+        reponse = self.client.get(
+            reverse("schema"),
+            HTTP_ACCEPT="application/json",
+        )
+        self.assertEqual(reponse.status_code, 200)
+        schema = reponse.json()
+        self.assertEqual(schema["openapi"], "3.0.3")
+        self.assertIn("/api/rumeurs/", schema["paths"])
+        self.assertIn(
+            "/api/rumeurs/{rumeur_id}/arbre-propagation/",
+            schema["paths"],
+        )
+        self.assertIn("/api/tableau-de-bord/statistiques/", schema["paths"])
+
+    def test_swagger_ui_est_accessible(self):
+        reponse = self.client.get(reverse("swagger-ui"))
+        self.assertEqual(reponse.status_code, 200)
+        self.assertContains(reponse, "swagger-ui")
+
+    def test_schema_documente_le_multipart_des_captures(self):
+        reponse = self.client.get(
+            reverse("schema"),
+            HTTP_ACCEPT="application/json",
+        )
+        schema = reponse.json()
+        operation = schema["paths"][
+            "/api/rumeurs/{rumeur_id}/publications/"
+        ]["post"]
+        self.assertIn("multipart/form-data", operation["requestBody"]["content"])
+
+
+# ---------------------------------------------------------------------------
 # Commande de démonstration
 # ---------------------------------------------------------------------------
 

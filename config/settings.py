@@ -82,6 +82,7 @@ INSTALLED_APPS = [
     # Bibliothèques tierces
     "rest_framework",
     "corsheaders",
+    "drf_spectacular",
     # Application métier
     "investigation",
 ]
@@ -196,6 +197,7 @@ REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": (
         "rest_framework.permissions.IsAuthenticated",
     ),
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
     "DEFAULT_RENDERER_CLASSES": (
         "rest_framework.renderers.JSONRenderer",
         "rest_framework.renderers.BrowsableAPIRenderer",
@@ -214,6 +216,31 @@ REST_FRAMEWORK = {
     },
     "EXCEPTION_HANDLER": "investigation.gestion_erreurs.gestionnaire_exceptions_francais",
     "TEST_REQUEST_DEFAULT_FORMAT": "json",
+}
+
+# ---------------------------------------------------------------------------
+# Documentation OpenAPI et Swagger
+# ---------------------------------------------------------------------------
+
+DOCUMENTATION_ACTIVE = lire_bool("DOCUMENTATION_ACTIVE", True)
+
+SPECTACULAR_SETTINGS = {
+    "TITLE": "FactCheck Mada API",
+    "DESCRIPTION": (
+        "API d'investigation pour documenter la propagation d'une rumeur et "
+        "retrouver sa première occurrence publique. Les résultats sont des "
+        "indices d'aide à la décision, jamais un verdict de vérité."
+    ),
+    "VERSION": "1.0.0",
+    "SERVE_INCLUDE_SCHEMA": False,
+    "COMPONENT_SPLIT_REQUEST": True,
+    "SORT_OPERATIONS": False,
+    "SWAGGER_UI_SETTINGS": {
+        "persistAuthorization": True,
+        "displayRequestDuration": True,
+        "filter": True,
+        "tryItOutEnabled": True,
+    },
 }
 
 # ---------------------------------------------------------------------------

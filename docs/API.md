@@ -2,6 +2,26 @@
 
 Base URL locale : `http://localhost:8000/api`
 
+## Documentation interactive
+
+Le schéma OpenAPI 3 est généré automatiquement depuis le code :
+
+| Route | Description |
+|---|---|
+| `GET /api/schema/` | Schéma OpenAPI (YAML par défaut, JSON avec `Accept: application/json`) |
+| `GET /api/docs/` | Swagger UI |
+| `GET /api/redoc/` | Redoc |
+
+Ouvrir `http://localhost:8000/api/docs/`, cliquer sur **Authorize**, puis coller
+le jeton d'accès obtenu via `POST /api/authentification/connexion/`. Le bouton
+autorise les appels aux routes protégées avec le schéma `Bearer`.
+
+La documentation peut être désactivée en production :
+
+```env
+DOCUMENTATION_ACTIVE=False
+```
+
 Toutes les réponses sont en JSON. Sauf mention contraire, les routes protégées
 attendent l'en-tête :
 

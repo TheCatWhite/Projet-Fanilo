@@ -400,15 +400,15 @@ class RumeurListeSerializer(serializers.ModelSerializer):
         except RapportVerification.DoesNotExist:
             return None
 
-    def get_score_credibilite(self, objet: Rumeur):
+    def get_score_credibilite(self, objet: Rumeur) -> int | None:
         rapport = self._rapport(objet)
         return rapport.score_credibilite if rapport else None
 
-    def get_niveau_risque(self, objet: Rumeur):
+    def get_niveau_risque(self, objet: Rumeur) -> str | None:
         rapport = self._rapport(objet)
         return rapport.niveau_risque if rapport else None
 
-    def get_niveau_risque_libelle(self, objet: Rumeur):
+    def get_niveau_risque_libelle(self, objet: Rumeur) -> str | None:
         rapport = self._rapport(objet)
         return rapport.get_niveau_risque_display() if rapport else None
 

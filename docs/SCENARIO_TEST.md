@@ -256,3 +256,17 @@ Importer `docs/collection_postman.json`, sélectionner l'environnement
 
 La collection utilise `base_url = http://localhost:8000/api`. Les dates des
 publications sont calculées automatiquement à l'exécution.
+
+## 14. Swagger
+
+Ouvrir `http://localhost:8000/api/docs/`, se connecter avec
+`POST /api/authentification/connexion/`, puis cliquer sur **Authorize** et coller
+le `jeton_acces` retourné. Les routes protégées peuvent ensuite être exécutées
+directement depuis Swagger. L'upload de capture utilise `multipart/form-data`.
+
+Le schéma OpenAPI est disponible sur `http://localhost:8000/api/schema/` et peut
+être validé avec :
+
+```bash
+python manage.py spectacular --file /tmp/factcheck-openapi.yaml --validate
+```

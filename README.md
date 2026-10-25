@@ -30,7 +30,8 @@ produire une fiche de vérification pour la salle de rédaction.
 ## 2. Stack et architecture
 
 - Python 3.12, Django 5.2, Django REST Framework 3.16.
-- SimpleJWT, django-cors-headers, Pillow, ReportLab, python-dotenv.
+- SimpleJWT, django-cors-headers, drf-spectacular, Pillow, ReportLab,
+  python-dotenv.
 - SQLite pour le MVP, PostgreSQL préparé par variables d'environnement.
 
 ```text
@@ -38,7 +39,8 @@ config/                  configuration Django (settings, urls, wsgi/asgi)
 investigation/
   models.py              modèles métier en français
   serializers.py         validation et sérialisation
-  views.py               endpoints (vues minces)
+  schemas.py             schémas de réponse pour OpenAPI
+  views.py               endpoints (vues minces) et annotations Swagger
   urls.py                routes françaises
   admin.py               administration complète
   permissions.py         contrôle d'accès
@@ -52,9 +54,9 @@ investigation/
     service_rapport.py
     integrations/        stubs d'API officielles (non actifs)
   management/commands/seed_donnees_demo.py
-  tests.py               36+ tests automatisés
+  tests.py               tests automatisés
 media/                   captures, PDF et images générés
-docs/                    documentation API, scénario, collection Postman
+docs/                    documentation API, historique, scénario, Postman
 ```
 
 Les vues ne contiennent pas de logique métier : elles délèguent aux services,
@@ -114,6 +116,7 @@ Variables principales (`.env`) :
 | `MODE_DEBUG` | `True` | Mode debug |
 | `HOTES_AUTORISES` | `localhost,127.0.0.1` | Hôtes autorisés |
 | `ORIGINES_CORS` | `http://localhost:3000,http://localhost:5173` | Origines React |
+| `DOCUMENTATION_ACTIVE` | `True` | Expose Swagger/Redoc et le schéma OpenAPI |
 | `BASE_DONNEES_MOTEUR` | `sqlite3` | `sqlite3` ou `postgresql` |
 | `BASE_DONNEES_NOM` | `db.sqlite3` | Nom de la base |
 | `BASE_DONNEES_UTILISATEUR` / `_MOT_DE_PASSE` / `_HOTE` / `_PORT` | — | Connexion PostgreSQL |
@@ -150,6 +153,9 @@ exigent l'en-tête `Authorization: Bearer <jeton_acces>`.
 | Méthode | Route | Description |
 |---|---|---|
 | GET | `/sante/` | Santé publique de l'API |
+| GET | `/schema/` | Schéma OpenAPI 3 (public) |
+| GET | `/docs/` | Swagger UI (public) |
+| GET | `/redoc/` | Documentation Redoc (public) |
 | POST | `/authentification/inscription/` | Créer un compte journaliste |
 | POST | `/authentification/connexion/` | Obtenir les jetons |
 | POST | `/authentification/rafraichir-token/` | Renouveler l'access token |
@@ -166,10 +172,23 @@ exigent l'en-tête `Authorization: Bearer <jeton_acces>`.
 | GET | `/rumeurs/{id}/rapport/image/` | Télécharger l'image PNG |
 | GET | `/tableau-de-bord/statistiques/` | Statistiques agrégées |
 
+Documentation interactive : [http://localhost:8000/api/docs/](http://localhost:8000/api/docs/)  
 Documentation détaillée : [docs/API.md](docs/API.md).  
 Guide des cinq étapes : [docs/GUIDE_ETAPES.md](docs/GUIDE_ETAPES.md).  
+Historique d'implémentation : [docs/HISTORIQUE.md](docs/HISTORIQUE.md).  
 Scénario complet : [docs/SCENARIO_TEST.md](docs/SCENARIO_TEST.md).  
 Collection Postman : [docs/collection_postman.json](docs/collection_postman.json).
+
+### Tester avec Swagger
+
+1. Lancer le serveur : `python manage.py runserver`.
+2. Ouvrir `http://localhost:8000/api/docs/`.
+3. Appeler `POST /api/authentification/connexion/` avec `demo` / `Demo1234!`.
+4. Cliquer sur **Authorize** et coller le `jeton_acces`.
+5. Tester les routes protégées, y compris l'upload multipart d'une capture.
+
+La documentation est désactivable avec `DOCUMENTATION_ACTIVE=False`, notamment
+en production.
 
 ---
 
@@ -226,13 +245,15 @@ les tests.
 
 ```bash
 python manage.py check
+python manage.py makemigrations --check --dry-run
 python manage.py test investigation -v 2
+python manage.py spectacular --file /tmp/factcheck-openapi.yaml --validate
 ```
 
 Les tests couvrent : normalisation et similarité, inscription/connexion/JWT,
 isolation entre journalistes, doublons, filtres, propagation, première détection,
 alertes compte et texte, upload d'image, rapport, exports PDF/PNG, tableau de bord,
-administration et commande de démonstration.
+administration, commande de démonstration et disponibilité de Swagger/OpenAPI.
 
 ---
 
@@ -243,6 +264,7 @@ administration et commande de démonstration.
 - Inscription limitée au rôle `journaliste` (aucune escalade de privilèges).
 - Uploads limités aux images de 5 Mo, noms de fichiers générés.
 - CORS restreint aux deux origines React, throttling activé.
+- Swagger/Redoc peuvent être désactivés avec `DOCUMENTATION_ACTIVE=False`.
 - `SECRET_KEY`, `DEBUG`, base et CORS pilotés par `.env`.
 - En production, le démarrage est refusé si `CLE_SECRETE` conserve une valeur de
   développement.

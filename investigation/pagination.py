@@ -31,3 +31,28 @@ class PaginationFrancaise(PageNumberPagination):
                 "resultats": schema,
             },
         }
+
+    def get_schema_operation_parameters(self, view) -> list[dict]:
+        """Documente les paramètres de pagination en français dans Swagger."""
+        return [
+            {
+                "name": "page",
+                "required": False,
+                "in": "query",
+                "description": "Numéro de page (commence à 1).",
+                "schema": {"type": "integer", "minimum": 1},
+            },
+            {
+                "name": "taille_page",
+                "required": False,
+                "in": "query",
+                "description": (
+                    "Nombre de résultats par page (1 à 100, 20 par défaut)."
+                ),
+                "schema": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": self.max_page_size,
+                },
+            },
+        ]
