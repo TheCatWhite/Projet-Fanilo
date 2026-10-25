@@ -1,0 +1,134 @@
+<section class="page">
+  <div class="conteneur">
+    <header class="entete-page">
+      <div>
+        <p class="tableau-bord__surtitre">Vue d’ensemble</p>
+        <h1>
+          Bonjour{{ profil() ? ' ' + profil()?.nom_utilisateur : '' }}
+        </h1>
+        <p class="sous-titre">
+          Suivez les rumeurs, les sources et les signaux de propagation de la
+          rédaction.
+        </p>
+      </div>
+      <div class="entete-page__actions">
+        <a class="bouton bouton--secondaire" routerLink="/rumeurs">Voir les rumeurs</a>
+        <a class="bouton" routerLink="/rumeurs/nouvelle">Nouvelle rumeur</a>
+      </div>
+    </header>
+
+    @if (messagesErreur().length > 0) {
+      <app-message-erreur [messages]="messagesErreur()" type="erreur" />
+    }
+
+    @if (chargement()) {
+      <app-chargeur message="Chargement du tableau de bord…" />
+    } @else if (statistiques(); as stats) {
+      <div class="grille grille--statistiques tableau-bord__statistiques">
+        <app-carte-statistique
+          libelle="Rumeurs suivies"
+          [valeur]="stats.total_rumeurs"
+          precision="Toutes les rumeurs enregistrées"
+        />
+        <app-carte-statistique
+          libelle="Analyses terminées"
+          [valeur]="stats.rumeurs_analysees"
+          precision="Rapports disponibles"
+        />
+        <app-carte-statistique
+          libelle="Haut risque"
+          [valeur]="stats.rumeurs_haut_risque"
+          precision="Niveaux élevé et très élevé"
+        />
+        <app-carte-statistique
+          libelle="Publications"
+          [valeur]="stats.total_publications"
+          precision="Sources documentées"
+        />
+      </div>
+
+      <div class="tableau-bord__contenu">
+        <section class="panneau">
+          <div class="tableau-bord__titre-section">
+            <div>
+              <h2>Rumeurs récentes</h2>
+              <p class="petit-texte">Les derniers dossiers enregistrés.</p>
+            </div>
+            <a routerLink="/rumeurs">Tout voir</a>
+          </div>
+
+          @if (stats.rumeurs_recentes.length === 0) {
+            <app-etat-vide message="Aucune rumeur pour le moment.">
+              <a class="bouton bouton--petit" routerLink="/rumeurs/nouvelle">
+                Enregistrer une rumeur
+              </a>
+            </app-etat-vide>
+          } @else {
+            <div class="liste-recente">
+              @for (rumeur of stats.rumeurs_recentes; track rumeur.id) {
+                <a class="liste-recente__ligne" [routerLink]="['/rumeurs', rumeur.id]">
+                  <div class="liste-recente__principal">
+                    <strong>{{ rumeur.titre }}</strong>
+                    <span>
+                      {{ rumeur.nombre_publications }} publication(s) ·
+                      {{ rumeur.cree_le | dateFrancaise }}
+                    </span>
+                  </div>
+                  <div class="liste-recente__etiquettes">
+                    <span [class]="'badge-statut badge-statut--' + rumeur.statut">
+                      {{ rumeur.statut_libelle }}
+                    </span>
+                    <app-badge-risque
+                      [niveau]="rumeur.niveau_risque"
+                      [libelle]="rumeur.niveau_risque_libelle"
+                    />
+                  </div>
+                </a>
+              }
+            </div>
+          }
+        </section>
+
+        <aside class="panneau">
+          <h2>Activité par plateforme</h2>
+          @if (stats.plateforme_plus_active) {
+            <p class="petit-texte">
+              Plateforme la plus active :
+              <strong>{{ stats.plateforme_plus_active }}</strong>
+            </p>
+          }
+
+          @if (repartitionPlateformes().length === 0) {
+            <app-etat-vide message="Aucune publication documentée." />
+          } @else {
+            <div class="repartition">
+              @for (plateforme of repartitionPlateformes(); track plateforme.cle) {
+                <div class="repartition__ligne">
+                  <div class="repartition__libelle">
+                    <span>{{ plateforme.libelle }}</span>
+                    <strong>{{ plateforme.valeur }}</strong>
+                  </div>
+                  <div class="repartition__barre">
+                    <span
+                      [style.width.%]="
+                        (plateforme.valeur / (stats.total_publications || 1)) * 100
+                      "
+                    ></span>
+                  </div>
+                </div>
+              }
+            </div>
+          }
+
+          <div class="tableau-bord__principe">
+            <strong>Rappel méthodologique</strong>
+            <p>
+              Ces indicateurs orientent l’enquête. Ils ne constituent pas un
+              verdict de véracité.
+            </p>
+          </div>
+        </aside>
+      </div>
+    }
+  </div>
+</section>

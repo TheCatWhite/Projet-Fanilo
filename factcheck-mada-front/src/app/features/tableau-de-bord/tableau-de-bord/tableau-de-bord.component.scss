@@ -1,0 +1,147 @@
+.tableau-bord__surtitre {
+  margin-bottom: 0.25rem;
+  color: var(--couleur-rouge-doux);
+  font-size: 0.76rem;
+  font-weight: 800;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.tableau-bord__statistiques {
+  margin-bottom: 1rem;
+}
+
+.tableau-bord__contenu {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(260px, 0.8fr);
+  gap: 1rem;
+  align-items: start;
+}
+
+.tableau-bord__titre-section {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.8rem;
+}
+
+.tableau-bord__titre-section h2 {
+  margin-bottom: 0.1rem;
+}
+
+.tableau-bord__titre-section a {
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.liste-recente {
+  display: grid;
+}
+
+.liste-recente__ligne {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.8rem 0;
+  border-top: 1px solid var(--couleur-bordure);
+  color: inherit;
+  text-decoration: none;
+}
+
+.liste-recente__ligne:first-child {
+  border-top: 0;
+}
+
+.liste-recente__ligne:hover .liste-recente__principal strong {
+  color: var(--couleur-bleu);
+}
+
+.liste-recente__principal {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  min-width: 0;
+}
+
+.liste-recente__principal strong {
+  color: var(--couleur-bleu-fonce);
+  font-size: 0.9rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.liste-recente__principal span {
+  color: var(--couleur-texte-secondaire);
+  font-size: 0.76rem;
+}
+
+.liste-recente__etiquettes {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.repartition {
+  display: grid;
+  gap: 0.8rem;
+  margin-top: 0.8rem;
+}
+
+.repartition__ligne {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.repartition__libelle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  color: var(--couleur-texte-secondaire);
+  font-size: 0.8rem;
+}
+
+.repartition__libelle strong {
+  color: var(--couleur-bleu-fonce);
+}
+
+.repartition__barre {
+  height: 0.4rem;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--couleur-fond);
+}
+
+.repartition__barre span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--couleur-bleu);
+}
+
+.tableau-bord__principe {
+  margin-top: 1.2rem;
+  border-left: 3px solid var(--couleur-bleu);
+  padding-left: 0.75rem;
+  color: var(--couleur-texte-secondaire);
+  font-size: 0.8rem;
+}
+
+.tableau-bord__principe strong {
+  color: var(--couleur-bleu-fonce);
+}
+
+.tableau-bord__principe p {
+  margin: 0.2rem 0 0;
+}
+
+@media (max-width: 880px) {
+  .tableau-bord__contenu {
+    grid-template-columns: 1fr;
+  }
+}

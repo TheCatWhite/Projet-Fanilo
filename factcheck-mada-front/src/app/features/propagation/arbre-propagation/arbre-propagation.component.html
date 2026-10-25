@@ -1,0 +1,201 @@
+<section class="page">
+  <div class="conteneur">
+    <header class="entete-page">
+      <div>
+        <h1>Propagation</h1>
+        <p class="sous-titre">
+          Chronologie des publications documentées et similarités calculées.
+        </p>
+      </div>
+      <div class="entete-page__actions">
+        <a class="bouton bouton--secondaire" [routerLink]="['/rumeurs', rumeurId]">
+          Retour au dossier
+        </a>
+        <a class="bouton bouton--secondaire" [routerLink]="['/rumeurs', rumeurId, 'rapport']">
+          Fiche de vérification
+        </a>
+        <a class="bouton" [routerLink]="['/rumeurs', rumeurId, 'publications', 'ajouter']">
+          Ajouter une publication
+        </a>
+      </div>
+    </header>
+
+    @if (messagesErreur().length > 0) {
+      <app-message-erreur [messages]="messagesErreur()" type="erreur" />
+    }
+
+    @if (chargement()) {
+      <app-chargeur message="Calcul de la chronologie…" />
+    } @else if (arbre(); as donnees) {
+      <div class="grille grille--statistiques">
+        <app-carte-statistique
+          libelle="Publications"
+          [valeur]="donnees.statistiques_propagation.nombre_publications"
+          precision="Sources documentées"
+        />
+        <app-carte-statistique
+          libelle="Plateformes"
+          [valeur]="donnees.statistiques_propagation.plateformes.length"
+          precision="Canaux observés"
+        />
+        <app-carte-statistique
+          libelle="Durée observée"
+          [valeur]="donnees.statistiques_propagation.duree_heures + ' h'"
+          precision="Entre première et dernière publication"
+        />
+        <app-carte-statistique
+          libelle="Rythme estimé"
+          [valeur]="donnees.statistiques_propagation.vitesse_estimee"
+          precision="Indice de propagation"
+        />
+      </div>
+
+      <div class="propagation__contenu">
+        <section class="panneau">
+          <div class="propagation__titre">
+            <div>
+              <h2>Chronologie</h2>
+              <p class="petit-texte">
+                Les étapes sont ordonnées par date de publication.
+              </p>
+            </div>
+          </div>
+
+          @if (noeudsTries().length === 0) {
+            <app-etat-vide message="Aucune publication à afficher.">
+              <a
+                class="bouton bouton--petit"
+                [routerLink]="['/rumeurs', rumeurId, 'publications', 'ajouter']"
+              >
+                Ajouter une publication
+              </a>
+            </app-etat-vide>
+          } @else {
+            <div class="chronologie">
+              @for (noeud of noeudsTries(); track noeud.id; let premier = $first) {
+                <article
+                  class="chronologie__etape"
+                  [class.chronologie__etape--source]="noeud.est_premiere_detection"
+                >
+                  <div class="chronologie__rail" aria-hidden="true">
+                    <span class="chronologie__point"></span>
+                  </div>
+
+                  <div class="chronologie__carte">
+                    <div class="chronologie__entete">
+                      <div>
+                        <span class="chronologie__date">
+                          {{ noeud.date_publication | dateFrancaise: true }}
+                        </span>
+                        <strong>{{ noeud.nom_auteur }}</strong>
+                      </div>
+                      <div class="chronologie__etiquettes">
+                        @if (noeud.est_premiere_detection) {
+                          <app-badge-source-zero />
+                        }
+                        <span class="chronologie__plateforme">
+                          {{ noeud.plateforme_libelle }}
+                        </span>
+                      </div>
+                    </div>
+
+                    @if (lienPour(noeud.id); as lien) {
+                      <p class="chronologie__similarite">
+                        Similarité avec la publication précédente :
+                        <strong>{{ scoreEnPourcentage(lien) }}</strong>
+                      </p>
+                    } @else if (premier) {
+                      <p class="chronologie__similarite">
+                        Point de départ de la chronologie documentée.
+                      </p>
+                    } @else {
+                      <p class="chronologie__similarite">
+                        Aucun lien de similarité calculé avec une publication
+                        antérieure.
+                      </p>
+                    }
+
+                    <div class="chronologie__pied">
+                      <div>
+                        @if (noeud.url_publication) {
+                          <a
+                            [href]="noeud.url_publication"
+                            target="_blank"
+                            rel="noopener"
+                          >
+                            Ouvrir la publication
+                          </a>
+                        }
+                        @if (noeud.nombre_alertes > 0) {
+                          <span class="chronologie__alerte">
+                            {{ noeud.nombre_alertes }} alerte(s) de compte
+                          </span>
+                        }
+                      </div>
+                      @if (noeud.indicateurs_risque.length > 0) {
+                        <div class="chronologie__indices">
+                          @for (indice of noeud.indicateurs_risque; track $index) {
+                            <span>{{ indice }}</span>
+                          }
+                        </div>
+                      }
+                    </div>
+                  </div>
+                </article>
+              }
+            </div>
+          }
+        </section>
+
+        <aside class="propagation__aside">
+          <section class="panneau">
+            <h2>Répartition</h2>
+            @if (repartitionPlateformes().length === 0) {
+              <app-etat-vide message="Aucune plateforme représentée." />
+            } @else {
+              <div class="repartition">
+                @for (plateforme of repartitionPlateformes(); track plateforme.cle) {
+                  <div class="repartition__ligne">
+                    <div class="repartition__libelle">
+                      <span>{{ plateforme.libelle }}</span>
+                      <strong>{{ plateforme.valeur }}</strong>
+                    </div>
+                    <div class="repartition__barre">
+                      <span
+                        [style.width.%]="
+                          (plateforme.valeur /
+                            (donnees.statistiques_propagation.nombre_publications || 1)) *
+                          100
+                        "
+                      ></span>
+                    </div>
+                  </div>
+                }
+              </div>
+            }
+          </section>
+
+          <section class="panneau propagation__note">
+            <strong>Lecture des liens</strong>
+            <p>
+              Une similarité élevée signale une reprise probable du même texte.
+              Ce n’est ni une preuve de coordination ni un verdict sur le fond.
+            </p>
+          </section>
+
+          @if (donnees.premiere_publication_detectee; as source) {
+            <section class="panneau">
+              <h2>Source Zéro</h2>
+              <p class="petit-texte">Première occurrence détectée.</p>
+              <p class="propagation__source">
+                <strong>{{ source.nom_auteur }}</strong><br />
+                {{ source.plateforme_libelle }} ·
+                {{ source.date_publication | dateFrancaise: true }}
+              </p>
+            </section>
+          }
+        </aside>
+      </div>
+    }
+  </div>
+</section>

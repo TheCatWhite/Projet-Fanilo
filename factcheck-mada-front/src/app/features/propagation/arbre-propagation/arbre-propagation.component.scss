@@ -1,0 +1,233 @@
+.propagation__contenu {
+  display: grid;
+  grid-template-columns: minmax(0, 1.6fr) minmax(250px, 0.65fr);
+  gap: 1rem;
+  align-items: start;
+  margin-top: 1rem;
+}
+
+.propagation__aside {
+  display: grid;
+  gap: 1rem;
+}
+
+.propagation__titre {
+  margin-bottom: 0.9rem;
+}
+
+.propagation__titre h2 {
+  margin-bottom: 0.1rem;
+}
+
+.chronologie {
+  display: grid;
+}
+
+.chronologie__etape {
+  display: grid;
+  grid-template-columns: 1.5rem minmax(0, 1fr);
+  gap: 0.7rem;
+}
+
+.chronologie__rail {
+  position: relative;
+  display: flex;
+  justify-content: center;
+}
+
+.chronologie__rail::before {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--couleur-bordure);
+  content: '';
+}
+
+.chronologie__etape:first-child .chronologie__rail::before {
+  top: 1.15rem;
+}
+
+.chronologie__etape:last-child .chronologie__rail::before {
+  bottom: calc(100% - 1.15rem);
+}
+
+.chronologie__point {
+  position: relative;
+  z-index: 1;
+  width: 0.85rem;
+  height: 0.85rem;
+  margin-top: 1rem;
+  border: 2px solid var(--couleur-bleu);
+  border-radius: 50%;
+  background: #fff;
+}
+
+.chronologie__etape--source .chronologie__point {
+  border-color: var(--couleur-vert);
+  background: var(--couleur-vert);
+}
+
+.chronologie__carte {
+  margin-bottom: 0.85rem;
+  border: 1px solid var(--couleur-bordure);
+  border-radius: var(--rayon);
+  padding: 0.85rem;
+  background: #fff;
+}
+
+.chronologie__etape--source .chronologie__carte {
+  border-color: var(--couleur-vert);
+  background: linear-gradient(100deg, #fff, var(--couleur-vert-tres-clair));
+}
+
+.chronologie__entete {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+}
+
+.chronologie__entete > div:first-child {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.chronologie__entete strong {
+  color: var(--couleur-bleu-fonce);
+  font-size: 0.9rem;
+}
+
+.chronologie__date {
+  color: var(--couleur-texte-secondaire);
+  font-size: 0.74rem;
+}
+
+.chronologie__etiquettes {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.chronologie__plateforme {
+  border-radius: 999px;
+  padding: 0.2rem 0.55rem;
+  background: var(--couleur-bleu-clair);
+  color: var(--couleur-bleu-fonce);
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.chronologie__similarite {
+  margin: 0.55rem 0 0;
+  color: var(--couleur-texte-secondaire);
+  font-size: 0.8rem;
+}
+
+.chronologie__similarite strong {
+  color: var(--couleur-bleu-fonce);
+}
+
+.chronologie__pied {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  margin-top: 0.6rem;
+  padding-top: 0.55rem;
+  border-top: 1px solid var(--couleur-bordure);
+  font-size: 0.76rem;
+}
+
+.chronologie__pied a {
+  margin-right: 0.7rem;
+  font-weight: 600;
+}
+
+.chronologie__alerte {
+  color: var(--couleur-rouge-fonce);
+}
+
+.chronologie__indices {
+  display: flex;
+  gap: 0.3rem;
+  flex-wrap: wrap;
+}
+
+.chronologie__indices span {
+  border-radius: 0.25rem;
+  padding: 0.15rem 0.4rem;
+  background: var(--couleur-rouge-tres-clair);
+  color: var(--couleur-rouge-fonce);
+  font-size: 0.68rem;
+}
+
+.repartition {
+  display: grid;
+  gap: 0.8rem;
+  margin-top: 0.8rem;
+}
+
+.repartition__ligne {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.repartition__libelle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  color: var(--couleur-texte-secondaire);
+  font-size: 0.8rem;
+}
+
+.repartition__libelle strong {
+  color: var(--couleur-bleu-fonce);
+}
+
+.repartition__barre {
+  height: 0.4rem;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--couleur-fond);
+}
+
+.repartition__barre span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--couleur-bleu);
+}
+
+.propagation__note {
+  border-left: 4px solid var(--couleur-bleu);
+  background: var(--couleur-bleu-clair);
+  color: var(--couleur-bleu-fonce);
+  font-size: 0.82rem;
+}
+
+.propagation__note p {
+  margin: 0.3rem 0 0;
+  color: var(--couleur-texte-secondaire);
+}
+
+.propagation__source {
+  margin: 0.4rem 0 0;
+  color: var(--couleur-texte-secondaire);
+  font-size: 0.82rem;
+}
+
+.propagation__source strong {
+  color: var(--couleur-bleu-fonce);
+}
+
+@media (max-width: 900px) {
+  .propagation__contenu {
+    grid-template-columns: 1fr;
+  }
+}

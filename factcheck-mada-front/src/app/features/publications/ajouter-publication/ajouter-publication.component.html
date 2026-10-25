@@ -1,0 +1,146 @@
+<section class="page">
+  <div class="conteneur conteneur--formulaire">
+    <header class="entete-page">
+      <div>
+        <h1>Ajouter une publication</h1>
+        <p class="sous-titre">
+          Documentez une occurrence publique de la rumeur. Une capture d’écran
+          est optionnelle ; la détection de propagation repose sur le texte et
+          les métadonnées.
+        </p>
+      </div>
+      <div class="entete-page__actions">
+        <a class="bouton bouton--secondaire" [routerLink]="['/rumeurs', rumeurId]">
+          Retour au dossier
+        </a>
+      </div>
+    </header>
+
+    <div class="panneau">
+      @if (messagesErreur().length > 0) {
+        <app-message-erreur [messages]="messagesErreur()" type="erreur" />
+      }
+
+      <form class="formulaire" [formGroup]="formulaire" (ngSubmit)="envoyer()">
+        <div class="grille grille--deux">
+          <div class="champ">
+            <label for="plateforme">Plateforme</label>
+            <select id="plateforme" formControlName="plateforme">
+              @for (plateforme of plateformes; track plateforme[0]) {
+                <option [value]="plateforme[0]">{{ plateforme[1] }}</option>
+              }
+            </select>
+          </div>
+
+          <div class="champ">
+            <label for="date_publication">Date et heure de publication</label>
+            <input
+              id="date_publication"
+              type="datetime-local"
+              formControlName="date_publication"
+            />
+            @if (datePublication.touched && datePublication.hasError('required')) {
+              <span class="champ__erreur">La date de publication est obligatoire.</span>
+            }
+          </div>
+        </div>
+
+        <div class="grille grille--deux">
+          <div class="champ">
+            <label for="nom_auteur">Nom du compte ou de l’auteur</label>
+            <input
+              id="nom_auteur"
+              type="text"
+              formControlName="nom_auteur"
+              placeholder="Ex. Mada Info Live"
+            />
+            @if (nomAuteur.touched && nomAuteur.hasError('required')) {
+              <span class="champ__erreur">Le nom de l’auteur est obligatoire.</span>
+            }
+          </div>
+
+          <div class="champ">
+            <label for="nombre_abonnes">Nombre d’abonnés (facultatif)</label>
+            <input
+              id="nombre_abonnes"
+              type="number"
+              min="0"
+              formControlName="nombre_abonnes"
+              placeholder="Ex. 12500"
+            />
+          </div>
+        </div>
+
+        <div class="grille grille--deux">
+          <div class="champ">
+            <label for="url_publication">URL de la publication (facultatif)</label>
+            <input
+              id="url_publication"
+              type="url"
+              formControlName="url_publication"
+              placeholder="https://…"
+            />
+          </div>
+
+          <div class="champ">
+            <label for="url_profil_auteur">URL du profil (facultatif)</label>
+            <input
+              id="url_profil_auteur"
+              type="url"
+              formControlName="url_profil_auteur"
+              placeholder="https://…"
+            />
+          </div>
+        </div>
+
+        <div class="champ">
+          <label for="date_creation_compte">Date de création du compte (facultatif)</label>
+          <input
+            id="date_creation_compte"
+            type="date"
+            formControlName="date_creation_compte"
+          />
+          <span class="champ__aide">
+            Une création récente peut être signalée comme indice de risque, sans
+            constituer une preuve à elle seule.
+          </span>
+        </div>
+
+        <div class="champ">
+          <label for="texte_brut">Texte de la publication (facultatif)</label>
+          <textarea
+            id="texte_brut"
+            formControlName="texte_brut"
+            placeholder="Copiez le texte observé pour permettre l’analyse des alertes et de la propagation…"
+          ></textarea>
+        </div>
+
+        <div class="champ">
+          <label for="capture_ecran">Capture d’écran (facultatif, 5 Mo maximum)</label>
+          <input
+            id="capture_ecran"
+            type="file"
+            accept="image/jpeg,image/png,image/webp,image/gif"
+            (change)="surFichierSelectionne($event)"
+          />
+          @if (nomFichier()) {
+            <span class="champ__aide">Fichier sélectionné : {{ nomFichier() }}</span>
+          }
+        </div>
+
+        <div class="actions">
+          <button class="bouton" type="submit" [disabled]="chargement()">
+            {{ chargement() ? 'Enregistrement…' : 'Enregistrer et analyser' }}
+          </button>
+          <a class="bouton bouton--secondaire" [routerLink]="['/rumeurs', rumeurId]">
+            Annuler
+          </a>
+        </div>
+      </form>
+
+      @if (chargement()) {
+        <app-chargeur message="Envoi de la publication et analyse des signaux…" />
+      }
+    </div>
+  </div>
+</section>

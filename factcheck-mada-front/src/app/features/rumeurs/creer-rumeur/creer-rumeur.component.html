@@ -1,0 +1,112 @@
+<section class="page">
+  <div class="conteneur conteneur--formulaire">
+    <header class="entete-page">
+      <div>
+        <h1>Nouvelle rumeur</h1>
+        <p class="sous-titre">
+          Enregistrez une affirmation à investiguer. Le backend détecte les
+          doublons avant de créer un nouveau dossier.
+        </p>
+      </div>
+      <div class="entete-page__actions">
+        <a class="bouton bouton--secondaire" routerLink="/rumeurs">Retour à la liste</a>
+      </div>
+    </header>
+
+    <div class="panneau">
+      <div class="notice">
+        Aucun verdict « vrai » ou « faux » n’est produit ici. Le dossier
+        regroupera ensuite des sources, des alertes et une analyse à valider
+        humainement.
+      </div>
+
+      @if (messagesErreur().length > 0) {
+        <app-message-erreur [messages]="messagesErreur()" type="erreur" />
+      }
+
+      @if (doublon(); as reponse) {
+        <div class="doublon">
+          <app-message-erreur [messages]="[reponse.message]" type="avertissement" />
+          <p>
+            Le contenu correspond à un dossier déjà suivi. Consultez-le avant de
+            poursuivre l’enquête.
+          </p>
+          <a class="bouton bouton--petit" [routerLink]="['/rumeurs', reponse.rumeur.id]">
+            Ouvrir le dossier existant
+          </a>
+
+          @if (reponse.similaires.length > 0) {
+            <div class="doublon__similaires">
+              <strong>Rumeurs similaires</strong>
+              <ul>
+                @for (similaire of reponse.similaires; track similaire.id) {
+                  <li>
+                    <a [routerLink]="['/rumeurs', similaire.id]">{{ similaire.titre }}</a>
+                    <span>{{ similaire.score_similarite }} % de similarité</span>
+                  </li>
+                }
+              </ul>
+            </div>
+          }
+        </div>
+      }
+
+      <form class="formulaire" [formGroup]="formulaire" (ngSubmit)="envoyer()">
+        <div class="champ">
+          <label for="titre">Titre de la rumeur</label>
+          <input
+            id="titre"
+            type="text"
+            formControlName="titre"
+            placeholder="Ex. Une pénurie de carburant annoncée pour lundi"
+          />
+          @if (titre.touched && titre.hasError('required')) {
+            <span class="champ__erreur">Le titre est obligatoire.</span>
+          }
+          @if (titre.touched && titre.hasError('minlength')) {
+            <span class="champ__erreur">Le titre doit contenir au moins 5 caractères.</span>
+          }
+        </div>
+
+        <div class="champ">
+          <label for="contenu">Contenu / affirmation observée</label>
+          <textarea
+            id="contenu"
+            formControlName="contenu"
+            placeholder="Décrivez précisément l’affirmation circulant sur les réseaux sociaux ou dans les médias…"
+          ></textarea>
+          @if (contenu.touched && contenu.hasError('required')) {
+            <span class="champ__erreur">Le contenu est obligatoire.</span>
+          }
+          @if (contenu.touched && contenu.hasError('minlength')) {
+            <span class="champ__erreur">Le contenu doit contenir au moins 20 caractères.</span>
+          }
+          <span class="champ__aide">
+            Ne concluez pas à la véracité : décrivez l’affirmation telle qu’elle circule.
+          </span>
+        </div>
+
+        <div class="champ">
+          <label for="langue">Langue principale</label>
+          <select id="langue" formControlName="langue">
+            <option value="fr">Français</option>
+            <option value="mg">Malagasy</option>
+            <option value="en">Anglais</option>
+            <option value="autre">Autre</option>
+          </select>
+        </div>
+
+        <div class="actions">
+          <button class="bouton" type="submit" [disabled]="chargement()">
+            {{ chargement() ? 'Enregistrement…' : 'Enregistrer la rumeur' }}
+          </button>
+          <a class="bouton bouton--secondaire" routerLink="/rumeurs">Annuler</a>
+        </div>
+      </form>
+
+      @if (chargement()) {
+        <app-chargeur message="Vérification des doublons et enregistrement…" />
+      }
+    </div>
+  </div>
+</section>

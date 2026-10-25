@@ -1,0 +1,76 @@
+.rumeur-carte {
+  border: 1px solid var(--couleur-bordure);
+  border-radius: var(--rayon);
+  padding: 1rem;
+  background: #fff;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.rumeur-carte:hover {
+  border-color: #b9c9d8;
+  box-shadow: var(--ombre);
+}
+
+.rumeur-carte__entete {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.rumeur-carte__etiquettes {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  flex-wrap: wrap;
+}
+
+.rumeur-carte__date {
+  color: var(--couleur-texte-secondaire);
+  font-size: 0.76rem;
+}
+
+.rumeur-carte h2 {
+  margin: 0.65rem 0 0.25rem;
+  font-size: 1.05rem;
+}
+
+.rumeur-carte h2 a {
+  color: var(--couleur-bleu-fonce);
+  text-decoration: none;
+}
+
+.rumeur-carte h2 a:hover {
+  color: var(--couleur-bleu);
+}
+
+.rumeur-carte__extrait {
+  display: -webkit-box;
+  margin-bottom: 0.8rem;
+  overflow: hidden;
+  color: var(--couleur-texte-secondaire);
+  font-size: 0.85rem;
+  line-height: 1.5;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.rumeur-carte__pied {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--couleur-bordure);
+}
+
+.rumeur-carte__indicateurs {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+  color: var(--couleur-texte-secondaire);
+  font-size: 0.76rem;
+}
