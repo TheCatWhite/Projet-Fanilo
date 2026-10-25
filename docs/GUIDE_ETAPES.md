@@ -4,6 +4,17 @@ Ce document décrit l'implémentation réalisée, les fichiers concernés, les
 commandes de vérification et les erreurs fréquentes. Le code complet se trouve
 dans le dépôt ; chaque section pointe vers les fichiers à lire.
 
+> **Organisation du dépôt** : le backend vit dans `backend/`. Tous les chemins de
+> fichiers cités ci-dessous (`config/`, `investigation/`, `manage.py`,
+> `requirements.txt`, `.env`) sont donc relatifs à `backend/`, et toutes les
+> commandes Django se lancent depuis ce dossier.
+>
+> ```bash
+> cd backend
+> ../env/bin/python manage.py <commande>
+> ```
+
+
 ---
 
 ## Étape 1 — Socle Django, configuration et santé
@@ -28,7 +39,8 @@ français et le fuseau de Madagascar, avec un endpoint de santé.
 
 ```bash
 source env/bin/activate
-pip install -r requirements.txt
+pip install -r backend/requirements.txt
+cd backend
 python manage.py check
 python manage.py runserver
 ```

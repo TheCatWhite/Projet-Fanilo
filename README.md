@@ -5,8 +5,11 @@ première occurrence publique d'une rumeur (« Source Zéro »), à documenter s
 propagation sur Facebook, Messenger, WhatsApp, TikTok, YouTube et le web, puis à
 produire une fiche de vérification pour la salle de rédaction.
 
-Le projet contient le backend Django/DRF à la racine et le frontend Angular dans
-`factcheck-mada-front/`.
+Le dépôt est organisé en deux applications côte à côte : le backend Django/DRF
+dans `backend/` et le frontend Angular dans `factcheck-mada-front/`.
+
+- Description détaillée et fonctionnement : [DESCRIPTION-PROJET.md](DESCRIPTION-PROJET.md)
+- Argumentaire et perspectives d'évolution : [PITCH-ET-PERSPECTIVES.md](PITCH-ET-PERSPECTIVES.md)
 
 > **Principe fondamental** : l'application ne dit jamais si une information est
 > vraie ou fausse. Elle fournit des indices, une traçabilité, des alertes et une
@@ -43,29 +46,35 @@ Le projet contient le backend Django/DRF à la racine et le frontend Angular dan
 - SQLite pour le MVP, PostgreSQL préparé par variables d'environnement.
 
 ```text
-config/                  configuration Django (settings, urls, wsgi/asgi)
-investigation/
-  models.py              modèles métier en français
-  serializers.py         validation et sérialisation
-  schemas.py             schémas de réponse pour OpenAPI
-  views.py               endpoints (vues minces) et annotations Swagger
-  urls.py                routes françaises
-  admin.py               administration complète
-  permissions.py         contrôle d'accès
-  pagination.py          pagination aux clés françaises
-  gestion_erreurs.py     messages d'erreur français
-  services/
-    service_similarite.py
-    service_propagation.py
-    service_analyse_compte.py
-    service_analyse_texte.py
-    service_rapport.py
-    integrations/        stubs d'API officielles (non actifs)
-  management/commands/seed_donnees_demo.py
-  tests.py               tests automatisés
-media/                   captures, PDF et images générés
-docs/                    documentation API, historique, scénario, Postman
+backend/                 API Django/DRF
+  manage.py
+  config/                configuration (settings, urls, wsgi/asgi)
+  investigation/
+    models.py            modèles métier en français
+    serializers.py       validation et sérialisation
+    schemas.py           schémas de réponse pour OpenAPI
+    views.py             endpoints (vues minces) et annotations Swagger
+    urls.py              routes françaises
+    admin.py             administration complète
+    permissions.py       contrôle d'accès
+    pagination.py        pagination aux clés françaises
+    gestion_erreurs.py   messages d'erreur français
+    services/
+      service_similarite.py
+      service_propagation.py
+      service_analyse_compte.py
+      service_analyse_texte.py
+      service_rapport.py
+      integrations/      stubs d'API officielles (non actifs)
+    management/commands/seed_donnees_demo.py
+    tests.py             tests automatisés
+  db.sqlite3             base de développement
+  media/                 captures, PDF et images générés
 factcheck-mada-front/    frontend Angular (sources, tests unitaires et e2e)
+docs/                    documentation API, historique, scénario, Postman
+env/                     environnement virtuel Python (non versionné)
+DESCRIPTION-PROJET.md    description fonctionnelle et technique
+PITCH-ET-PERSPECTIVES.md argumentaire et feuille de route
 ```
 
 Les vues ne contiennent pas de logique métier : elles délèguent aux services,
@@ -75,18 +84,22 @@ ce qui facilite les tests et l'évolution du produit.
 
 ## 3. Installation
 
+### Backend Django
+
 ```bash
 cd /home/catwhite/Bureau/Fanilo
 python3 -m venv env                  # déjà présent dans ce dépôt
 source env/bin/activate
-pip install -r requirements.txt
+pip install -r backend/requirements.txt
 
+cd backend
 cp .env.example .env
 # Modifier au minimum CLE_SECRETE dans .env
 ```
 
-Le fichier `.env` est ignoré par Git. Pour un démarrage rapide, les valeurs par
-défaut du projet fonctionnent en développement.
+Le fichier `backend/.env` est ignoré par Git. Les chemins de la base, de `media/`
+et du `.env` sont relatifs au dossier `backend/` : il faut donc lancer toutes les
+commandes Django depuis ce dossier.
 
 ### Frontend Angular
 
@@ -103,10 +116,18 @@ des cinq étapes, l'arborescence et les tests.
 ### Base de données et compte administrateur
 
 ```bash
-python manage.py migrate
-python manage.py createsuperuser
-python manage.py seed_donnees_demo
-python manage.py runserver
+cd backend
+../env/bin/python manage.py migrate
+../env/bin/python manage.py createsuperuser
+../env/bin/python manage.py seed_donnees_demo
+../env/bin/python manage.py runserver
+```
+
+Ou, plus simplement, avec les scripts fournis à la racine :
+
+```bash
+./demarrer-backend.sh      # http://localhost:8000/api/
+./demarrer-front.sh        # http://localhost:5173
 ```
 
 Comptes créés par le jeu de démonstration :
@@ -122,7 +143,8 @@ Comptes créés par le jeu de démonstration :
 `seed_donnees_demo` est idempotente. Pour recréer les données :
 
 ```bash
-python manage.py seed_donnees_demo --reinitialiser
+cd backend
+../env/bin/python manage.py seed_donnees_demo --reinitialiser
 ```
 
 ---
@@ -158,8 +180,9 @@ BASE_DONNEES_PORT=5432
 Puis installez le pilote PostgreSQL et appliquez les migrations :
 
 ```bash
-pip install -r requirements-postgresql.txt
-python manage.py migrate
+cd backend
+../env/bin/pip install -r requirements-postgresql.txt
+../env/bin/python manage.py migrate
 ```
 
 Le code métier ne change pas.
@@ -203,7 +226,7 @@ exigent l'en-tête `Authorization: Bearer <jeton_acces>`.
 
 ### Tester avec Swagger
 
-1. Lancer le serveur : `python manage.py runserver`.
+1. Lancer le serveur : `cd backend && ../env/bin/python manage.py runserver`.
 2. Ouvrir `http://localhost:8000/api/docs/`.
 3. Appeler `POST /api/authentification/connexion/` avec `demo` / `Demo1234!`.
 4. Cliquer sur **Authorize** et coller le `jeton_acces`.
@@ -266,10 +289,17 @@ les tests.
 ## 8. Tests
 
 ```bash
-python manage.py check
-python manage.py makemigrations --check --dry-run
-python manage.py test investigation -v 2
-python manage.py spectacular --file /tmp/factcheck-openapi.yaml --validate
+cd backend
+../env/bin/python manage.py check
+../env/bin/python manage.py makemigrations --check --dry-run
+../env/bin/python manage.py test investigation -v 2
+../env/bin/python manage.py spectacular --file /tmp/factcheck-openapi.yaml --validate
+```
+
+Un script regroupe toutes les vérifications :
+
+```bash
+./verifier-tout.sh
 ```
 
 Les tests couvrent : normalisation et similarité, inscription/connexion/JWT,
@@ -286,8 +316,18 @@ npm test -- --watch=false
 npm run test:e2e        # backend et frontend lancés, Google Chrome disponible
 ```
 
-Résultats de la dernière validation : build OK, **15 tests unitaires** et
-**3 scénarios Playwright** réussis.
+Résultats de la dernière validation complète :
+
+| Vérification | Résultat |
+|---|---|
+| `manage.py check` | 0 problème |
+| Migrations | aucune modification détectée |
+| Tests backend | **41 tests réussis** |
+| `pip check` | aucune dépendance cassée |
+| Schéma OpenAPI | valide |
+| Build Angular | réussi |
+| Tests unitaires frontend | **15 réussis** |
+| Scénarios Playwright | **3 réussis** |
 
 ---
 

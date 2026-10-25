@@ -2,6 +2,9 @@
 
 Base URL locale : `http://localhost:8000/api`
 
+> Le code du backend se trouve dans `backend/`. Les commandes Django se lancent
+> depuis ce dossier.
+
 ## Documentation interactive
 
 Le schéma OpenAPI 3 est généré automatiquement depuis le code :

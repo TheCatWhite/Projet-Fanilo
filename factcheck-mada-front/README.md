@@ -52,9 +52,8 @@ des services injectables, des guards et un intercepteur fonctionnel.
 ### Démarrer le backend
 
 ```bash
-cd /home/catwhite/Bureau/Fanilo
-source env/bin/activate
-python manage.py runserver
+cd /home/catwhite/Bureau/Fanilo/backend
+../env/bin/python manage.py runserver
 ```
 
 L’API doit répondre sur `http://localhost:8000/api/`. Le CORS Django autorise
@@ -348,7 +347,7 @@ des dépendances Python :
 
 ```bash
 source env/bin/activate
-pip install -r requirements.txt
+pip install -r backend/requirements.txt
 ```
 
 ### Le rôle choisi à l’inscription est ignoré

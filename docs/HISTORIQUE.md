@@ -1,7 +1,7 @@
 # Historique d'implémentation — FactCheck Mada
 
-> **Dernière mise à jour : 25 octobre 2026** — version 1.0 du backend, avec
-> documentation OpenAPI/Swagger.
+> **Dernière mise à jour : 25 octobre 2026** — restructuration du dépôt en
+> `backend/` + `factcheck-mada-front/`, documentation de présentation.
 
 Ce document retrace les étapes réalisées, les décisions techniques et les
 vérifications effectuées sur le backend. Il complète le guide pratique
@@ -314,3 +314,52 @@ sont dans `factcheck-mada-front/README.md`.
    notifications.
 4. Intégrer progressivement des API officielles, avec autorisation et
    conformité juridique.
+
+---
+
+## 12. Restructuration du dépôt et documentation de présentation
+
+### Réalisé
+
+- Déplacement du backend Django dans `backend/` : `manage.py`, `config/`,
+  `investigation/`, `requirements.txt`, `requirements-postgresql.txt`,
+  `.env.example`, `db.sqlite3` et `media/`.
+- Frontend Angular conservé dans `factcheck-mada-front/`, à côté du backend.
+- Environnement virtuel `env/` laissé à la racine : un virtualenv contient des
+  chemins absolus et ne doit pas être déplacé.
+- `BASE_DIR` n'a pas été modifié : il pointe désormais automatiquement sur
+  `backend/`, ce qui conserve la base SQLite, `media/`, `.env` et `staticfiles/`
+  au bon endroit sans changement de code.
+- Mise à jour des commandes dans `README.md`, `docs/GUIDE_ETAPES.md` et
+  `factcheck-mada-front/README.md`.
+- Ajout de `DESCRIPTION-PROJET.md` (description et fonctionnement) et de
+  `PITCH-ET-PERSPECTIVES.md` (argumentaire et feuille de route).
+- Ajout de `demarrer-backend.sh`, `demarrer-front.sh` et `verifier-tout.sh`.
+
+### Décision
+
+- `docs/` reste à la racine : c'est de la documentation transversale.
+- Le proxy Angular continue de cibler `http://localhost:8000` : le port du
+  backend ne change pas.
+- Aucun modèle, aucune migration, aucun endpoint, aucun composant Angular n'a été
+  modifié. La restructuration est donc neutre fonctionnellement.
+
+### Validation
+
+```bash
+cd backend
+../env/bin/python manage.py check
+../env/bin/python manage.py makemigrations --check --dry-run
+../env/bin/python manage.py test investigation -v 1
+../env/bin/pip check
+../env/bin/python manage.py spectacular --file /tmp/openapi.yaml --validate
+
+cd ../factcheck-mada-front
+npm run build
+npm test -- --watch=false
+npm run test:e2e
+```
+
+Résultats : 0 problème de configuration, aucune migration manquante,
+**41 tests backend** réussis, schéma OpenAPI valide, build Angular réussi,
+**15 tests unitaires** et **3 scénarios Playwright** réussis.

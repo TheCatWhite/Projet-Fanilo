@@ -3,6 +3,9 @@
 Ce scénario valide le parcours d'une démonstration de hackathon, de l'inscription
 à l'export du rapport. Il nécessite `curl` et `jq`.
 
+> Le code du backend se trouve dans `backend/` : les commandes `manage.py`
+> s'exécutent depuis ce dossier.
+
 ```bash
 BASE=http://localhost:8000/api
 ```
