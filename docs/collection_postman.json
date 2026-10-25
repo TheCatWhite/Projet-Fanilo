@@ -1,0 +1,360 @@
+{
+  "info": {
+    "name": "FactCheck Mada — API",
+    "description": "Collection de démonstration du back-end FactCheck Mada. Exécuter les dossiers dans l'ordre : Authentification, Rumeurs, Publications, Rapport.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "base_url", "value": "http://localhost:8000/api" },
+    { "key": "jeton_acces", "value": "" },
+    { "key": "jeton_rafraichissement", "value": "" },
+    { "key": "nom_utilisateur", "value": "demo_postman" },
+    { "key": "email", "value": "demo_postman@factcheck.mg" },
+    { "key": "mot_de_passe", "value": "MotDePasse123!" },
+    { "key": "rumeur_id", "value": "" },
+    { "key": "publication_1", "value": "" },
+    { "key": "publication_2", "value": "" },
+    { "key": "publication_3", "value": "" }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "const maintenant = Date.now();",
+          "const dateMoins = (jours) => new Date(maintenant - jours * 86400000).toISOString();",
+          "pm.collectionVariables.set('date_pub_1', dateMoins(1));",
+          "pm.collectionVariables.set('date_pub_2', dateMoins(2));",
+          "pm.collectionVariables.set('date_pub_3', dateMoins(3));",
+          "pm.collectionVariables.set('date_compte', new Date(maintenant - 20 * 86400000).toISOString().slice(0, 10));"
+        ]
+      }
+    }
+  ],
+  "item": [
+    {
+      "name": "1. Santé",
+      "item": [
+        {
+          "name": "GET /sante/",
+          "request": { "method": "GET", "url": "{{base_url}}/sante/" },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('API disponible', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "2. Authentification",
+      "item": [
+        {
+          "name": "Inscription",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const suffixe = Date.now();",
+                  "pm.collectionVariables.set('nom_utilisateur', 'demo_' + suffixe);",
+                  "pm.collectionVariables.set('email', 'demo_' + suffixe + '@factcheck.mg');"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Compte créé', () => pm.response.to.have.status(201));",
+                  "const donnees = pm.response.json();",
+                  "pm.collectionVariables.set('jeton_acces', donnees.jeton_acces);",
+                  "pm.collectionVariables.set('jeton_rafraichissement', donnees.jeton_rafraichissement);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nom_utilisateur\": \"{{nom_utilisateur}}\",\n  \"email\": \"{{email}}\",\n  \"mot_de_passe\": \"{{mot_de_passe}}\",\n  \"confirmation_mot_de_passe\": \"{{mot_de_passe}}\",\n  \"redaction\": \"Rédaction Postman\"\n}"
+            },
+            "url": "{{base_url}}/authentification/inscription/"
+          }
+        },
+        {
+          "name": "Connexion",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Connexion réussie', () => pm.response.to.have.status(200));",
+                  "const donnees = pm.response.json();",
+                  "pm.collectionVariables.set('jeton_acces', donnees.jeton_acces);",
+                  "pm.collectionVariables.set('jeton_rafraichissement', donnees.jeton_rafraichissement);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nom_utilisateur\": \"{{nom_utilisateur}}\",\n  \"mot_de_passe\": \"{{mot_de_passe}}\"\n}"
+            },
+            "url": "{{base_url}}/authentification/connexion/"
+          }
+        },
+        {
+          "name": "Rafraîchir le jeton",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"jeton_rafraichissement\": \"{{jeton_rafraichissement}}\"\n}"
+            },
+            "url": "{{base_url}}/authentification/rafraichir-token/"
+          }
+        },
+        {
+          "name": "Profil",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{jeton_acces}}" }
+            ],
+            "url": "{{base_url}}/authentification/profil/"
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Rumeurs",
+      "auth": {
+        "type": "bearer",
+        "bearer": [{ "key": "token", "value": "{{jeton_acces}}", "type": "string" }]
+      },
+      "item": [
+        {
+          "name": "Créer une rumeur",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Rumeur créée', () => pm.response.to.have.status(201));",
+                  "const donnees = pm.response.json();",
+                  "pm.collectionVariables.set('rumeur_id', donnees.rumeur.id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"titre\": \"Alerte prétendue sur une pénurie de carburant\",\n  \"contenu\": \"URGENCE : une grave pénurie de carburant toucherait Antananarivo. Les stations seraient fermées. Partagez ce message à tous avant qu ils suppriment l information. Une aide de 500 000 ariary est offerte.\",\n  \"langue\": \"fr\"\n}"
+            },
+            "url": "{{base_url}}/rumeurs/"
+          }
+        },
+        {
+          "name": "Créer un doublon (attendu 200)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"titre\": \"Alerte prétendue sur une pénurie de carburant — bis\",\n  \"contenu\": \"URGENCE : une grave pénurie de carburant toucherait Antananarivo. Les stations seraient fermées. Partagez ce message à tous avant qu ils suppriment l information. Une aide de 500 000 ariary est offerte.\",\n  \"langue\": \"fr\"\n}"
+            },
+            "url": "{{base_url}}/rumeurs/"
+          }
+        },
+        {
+          "name": "Lister les rumeurs",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/rumeurs/?recherche=carburant"
+          }
+        },
+        {
+          "name": "Détail de la rumeur",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/rumeurs/{{rumeur_id}}/"
+          }
+        },
+        {
+          "name": "Analyser le texte",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/rumeurs/{{rumeur_id}}/analyser-texte/"
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. Publications",
+      "auth": {
+        "type": "bearer",
+        "bearer": [{ "key": "token", "value": "{{jeton_acces}}", "type": "string" }]
+      },
+      "item": [
+        {
+          "name": "Publication 1 — Facebook",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Publication créée', () => pm.response.to.have.status(201));",
+                  "pm.collectionVariables.set('publication_1', pm.response.json().publication.id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"plateforme\": \"facebook\",\n  \"url_publication\": \"https://facebook.com/posts/postman-1\",\n  \"nom_auteur\": \"Alerte Info Postman\",\n  \"url_profil_auteur\": \"https://facebook.com/alerte.postman\",\n  \"date_creation_compte\": \"{{date_compte}}\",\n  \"nombre_abonnes\": 80,\n  \"date_publication\": \"{{date_pub_1}}\",\n  \"texte_brut\": \"URGENCE : une grave pénurie de carburant toucherait Antananarivo. Les stations seraient fermées. Partagez ce message à tous avant qu ils suppriment l information. Une aide de 500 000 ariary est offerte.\"\n}"
+            },
+            "url": "{{base_url}}/rumeurs/{{rumeur_id}}/publications/"
+          }
+        },
+        {
+          "name": "Publication 2 — WhatsApp",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Publication créée', () => pm.response.to.have.status(201));",
+                  "pm.collectionVariables.set('publication_2', pm.response.json().publication.id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"plateforme\": \"whatsapp\",\n  \"nom_auteur\": \"Groupe Postman\",\n  \"url_profil_auteur\": \"\",\n  \"nombre_abonnes\": null,\n  \"date_publication\": \"{{date_pub_2}}\",\n  \"texte_brut\": \"URGENCE : une grave pénurie de carburant toucherait Antananarivo. Les stations seraient fermées. Partagez ce message à tous avant qu ils suppriment l information. Une aide de 500 000 ariary est offerte. Selon nos informations.\"\n}"
+            },
+            "url": "{{base_url}}/rumeurs/{{rumeur_id}}/publications/"
+          }
+        },
+        {
+          "name": "Publication 3 — TikTok (source zéro)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Publication créée', () => pm.response.to.have.status(201));",
+                  "pm.collectionVariables.set('publication_3', pm.response.json().publication.id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"plateforme\": \"tiktok\",\n  \"url_publication\": \"https://tiktok.com/@postman/video/1\",\n  \"nom_auteur\": \"postman_tiktok\",\n  \"url_profil_auteur\": \"https://tiktok.com/@postman\",\n  \"date_creation_compte\": \"2026-09-01\",\n  \"nombre_abonnes\": 2500,\n  \"date_publication\": \"{{date_pub_3}}\",\n  \"texte_brut\": \"URGENCE : une grave pénurie de carburant toucherait Antananarivo. Les stations seraient fermées. Partagez ce message à tous avant qu ils suppriment l information. Une aide de 500 000 ariary est offerte.\"\n}"
+            },
+            "url": "{{base_url}}/rumeurs/{{rumeur_id}}/publications/"
+          }
+        },
+        {
+          "name": "Lister les publications",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/rumeurs/{{rumeur_id}}/publications/"
+          }
+        },
+        {
+          "name": "Analyser le compte 1",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/publications/{{publication_1}}/analyser-compte/"
+          }
+        },
+        {
+          "name": "Arbre de propagation",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/rumeurs/{{rumeur_id}}/arbre-propagation/"
+          }
+        }
+      ]
+    },
+    {
+      "name": "5. Rapport et tableau de bord",
+      "auth": {
+        "type": "bearer",
+        "bearer": [{ "key": "token", "value": "{{jeton_acces}}", "type": "string" }]
+      },
+      "item": [
+        {
+          "name": "Générer le rapport",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/rumeurs/{{rumeur_id}}/generer-rapport/"
+          }
+        },
+        {
+          "name": "Consulter le rapport",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/rumeurs/{{rumeur_id}}/rapport/"
+          }
+        },
+        {
+          "name": "Télécharger le PDF",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/rumeurs/{{rumeur_id}}/rapport/pdf/"
+          }
+        },
+        {
+          "name": "Télécharger l'image",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/rumeurs/{{rumeur_id}}/rapport/image/"
+          }
+        },
+        {
+          "name": "Tableau de bord",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/tableau-de-bord/statistiques/"
+          }
+        }
+      ]
+    }
+  ]
+}

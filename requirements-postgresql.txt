@@ -1,0 +1,5 @@
+-r requirements.txt
+
+# Pilote PostgreSQL optionnel. Installez ce fichier uniquement si vous
+# utilisez BASE_DONNEES_MOTEUR=postgresql.
+psycopg[binary]>=3.2,<4
