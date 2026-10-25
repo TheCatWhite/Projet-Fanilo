@@ -1,0 +1,29 @@
+.statistique {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-height: 7.2rem;
+  padding: 1rem;
+  border: 1px solid var(--couleur-bordure);
+  border-radius: var(--rayon);
+  background: #fff;
+}
+
+.statistique__libelle {
+  color: var(--couleur-texte-secondaire);
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.statistique__valeur {
+  color: var(--couleur-bleu-fonce);
+  font-size: 2rem;
+  line-height: 1.1;
+}
+
+.statistique__precision {
+  color: var(--couleur-texte-secondaire);
+  font-size: 0.78rem;
+}

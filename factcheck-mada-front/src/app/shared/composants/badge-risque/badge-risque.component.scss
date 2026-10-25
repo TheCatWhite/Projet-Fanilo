@@ -1,0 +1,35 @@
+.badge-risque {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  padding: 0.2rem 0.65rem;
+  font-size: 0.76rem;
+  font-weight: 700;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+
+.badge-risque--faible {
+  color: var(--couleur-vert-fonce);
+  background: var(--couleur-vert-tres-clair);
+}
+
+.badge-risque--moyen {
+  color: #8a5200;
+  background: #fff1d6;
+}
+
+.badge-risque--eleve {
+  color: var(--couleur-rouge-fonce);
+  background: var(--couleur-rouge-tres-clair);
+}
+
+.badge-risque--tres_eleve {
+  color: #fff;
+  background: #8f1d1d;
+}
+
+.badge-risque--inconnu {
+  color: var(--couleur-texte-secondaire);
+  background: var(--couleur-fond);
+}

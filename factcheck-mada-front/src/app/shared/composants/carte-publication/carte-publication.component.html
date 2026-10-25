@@ -1,0 +1,59 @@
+<article
+  class="publication"
+  [class.publication--source-zero]="publication.est_premiere_detection"
+>
+  <div class="publication__entete">
+    <span class="publication__icone" aria-hidden="true">{{ icone }}</span>
+    <div class="publication__identite">
+      <strong>{{ publication.nom_auteur }}</strong>
+      <span>
+        {{ publication.plateforme_libelle }} ·
+        {{ publication.date_publication | dateFrancaise: true }}
+      </span>
+    </div>
+    @if (publication.est_premiere_detection) {
+      <app-badge-source-zero />
+    }
+  </div>
+
+  <dl class="publication__metadonnees">
+    @if (publication.nombre_abonnes !== null) {
+      <div>
+        <dt>Audience</dt>
+        <dd>{{ publication.nombre_abonnes }} abonnés</dd>
+      </div>
+    }
+    @if (publication.date_creation_compte) {
+      <div>
+        <dt>Compte créé le</dt>
+        <dd>{{ publication.date_creation_compte | dateFrancaise }}</dd>
+      </div>
+    }
+    @if (publication.url_publication) {
+      <div>
+        <dt>Publication</dt>
+        <dd>
+          <a [href]="publication.url_publication" target="_blank" rel="noopener">
+            Ouvrir la source
+          </a>
+        </dd>
+      </div>
+    }
+  </dl>
+
+  @if (publication.texte_brut) {
+    <p class="publication__texte">{{ publication.texte_brut }}</p>
+  }
+
+  @if (publication.alertes_compte.length > 0) {
+    <div class="publication__alertes">
+      @for (alerte of publication.alertes_compte; track alerte.id) {
+        <app-carte-alerte
+          [typeLibelle]="alerte.type_libelle"
+          [gravite]="alerte.gravite"
+          [description]="alerte.description"
+        />
+      }
+    </div>
+  }
+</article>

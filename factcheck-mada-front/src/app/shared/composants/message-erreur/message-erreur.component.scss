@@ -1,0 +1,41 @@
+.message {
+  border: 1px solid transparent;
+  border-left-width: 4px;
+  border-radius: var(--rayon);
+  padding: 0.85rem 1rem;
+  margin-bottom: 1rem;
+  font-size: 0.92rem;
+}
+
+.message ul {
+  margin: 0;
+  padding-left: 1.1rem;
+}
+
+.message li + li {
+  margin-top: 0.3rem;
+}
+
+.message--erreur {
+  color: var(--couleur-rouge-fonce);
+  background: var(--couleur-rouge-tres-clair);
+  border-color: var(--couleur-rouge-doux);
+}
+
+.message--avertissement {
+  color: #7a4a00;
+  background: #fff7e3;
+  border-color: #d89a25;
+}
+
+.message--succes {
+  color: var(--couleur-vert-fonce);
+  background: var(--couleur-vert-tres-clair);
+  border-color: var(--couleur-vert);
+}
+
+.message--information {
+  color: var(--couleur-bleu-fonce);
+  background: #eef4fb;
+  border-color: var(--couleur-bleu);
+}

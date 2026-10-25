@@ -1,0 +1,24 @@
+<header class="barre">
+  <a class="barre__logo" routerLink="/tableau-de-bord" aria-label="FactCheck Mada, accueil">
+    <span class="barre__marque">FC</span>
+    <span class="barre__nom">FactCheck Mada</span>
+  </a>
+
+  <nav class="barre__liens" aria-label="Navigation principale">
+    <a routerLink="/tableau-de-bord" routerLinkActive="actif">Tableau de bord</a>
+    <a routerLink="/rumeurs" routerLinkActive="actif">Rumeurs</a>
+    <a routerLink="/rumeurs/nouvelle" routerLinkActive="actif">Nouvelle rumeur</a>
+  </nav>
+
+  @if (profil) {
+    <div class="barre__utilisateur">
+      <div class="barre__identite">
+        <strong>{{ profil.nom_utilisateur }}</strong>
+        <span>{{ roleLibelle }}</span>
+      </div>
+      <button type="button" class="bouton bouton--discret" (click)="deconnexion.emit()">
+        Déconnexion
+      </button>
+    </div>
+  }
+</header>

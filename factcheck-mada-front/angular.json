@@ -92,7 +92,10 @@
               "buildTarget": "factcheck-mada-front:build:development"
             }
           },
-          "defaultConfiguration": "development"
+          "defaultConfiguration": "development",
+          "options": {
+            "port": 5173
+          }
         },
         "test": {
           "builder": "@angular/build:unit-test"

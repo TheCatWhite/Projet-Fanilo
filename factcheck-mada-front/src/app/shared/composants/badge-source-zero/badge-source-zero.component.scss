@@ -1,0 +1,18 @@
+.badge-source {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  border-radius: 999px;
+  padding: 0.25rem 0.7rem;
+  background: var(--couleur-vert);
+  color: #fff;
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+.badge-source::before {
+  content: '●';
+  font-size: 0.55rem;
+}

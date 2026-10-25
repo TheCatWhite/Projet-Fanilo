@@ -1,1 +1,392 @@
-/* You can add global styles to this file, and also import other style files */
+:root {
+  --couleur-bleu-fonce: #102a43;
+  --couleur-bleu: #1f5f8b;
+  --couleur-bleu-clair: #eaf2f9;
+  --couleur-rouge-doux: #c65353;
+  --couleur-rouge-fonce: #8f2d2d;
+  --couleur-rouge-tres-clair: #fff1f1;
+  --couleur-vert: #2f7d5b;
+  --couleur-vert-fonce: #1f5b41;
+  --couleur-vert-tres-clair: #edf8f2;
+  --couleur-fond: #f5f7fa;
+  --couleur-texte: #243447;
+  --couleur-texte-secondaire: #607184;
+  --couleur-bordure: #dce3ea;
+  --rayon: 0.65rem;
+  --ombre: 0 8px 24px rgb(16 42 67 / 7%);
+  font-family:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+  color: var(--couleur-texte);
+  background: var(--couleur-fond);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  min-height: 100%;
+  margin: 0;
+}
+
+body {
+  background: var(--couleur-fond);
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+a {
+  color: var(--couleur-bleu);
+}
+
+h1,
+h2,
+h3,
+p {
+  margin-top: 0;
+}
+
+h1 {
+  margin-bottom: 0.35rem;
+  color: var(--couleur-bleu-fonce);
+  font-size: clamp(1.45rem, 2.4vw, 2rem);
+  line-height: 1.2;
+}
+
+h2 {
+  color: var(--couleur-bleu-fonce);
+  font-size: 1.15rem;
+}
+
+h3 {
+  color: var(--couleur-bleu-fonce);
+  font-size: 1rem;
+}
+
+.conteneur {
+  width: min(1180px, calc(100% - 2rem));
+  margin: 0 auto;
+}
+
+.page {
+  padding: 1.8rem 0 3rem;
+}
+
+.entete-page {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.2rem;
+}
+
+.entete-page__actions {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.sous-titre {
+  margin: 0;
+  color: var(--couleur-texte-secondaire);
+  font-size: 0.92rem;
+}
+
+.carte,
+.panneau {
+  border: 1px solid var(--couleur-bordure);
+  border-radius: var(--rayon);
+  background: #fff;
+  box-shadow: var(--ombre);
+}
+
+.carte {
+  padding: 1rem;
+}
+
+.panneau {
+  padding: clamp(1rem, 2.5vw, 1.5rem);
+}
+
+.panneau + .panneau {
+  margin-top: 1rem;
+}
+
+.grille {
+  display: grid;
+  gap: 1rem;
+}
+
+.grille--statistiques {
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+}
+
+.grille--deux {
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+.texte-secondaire {
+  color: var(--couleur-texte-secondaire);
+}
+
+.petit-texte {
+  color: var(--couleur-texte-secondaire);
+  font-size: 0.8rem;
+}
+
+.bouton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  min-height: 2.35rem;
+  padding: 0.45rem 0.85rem;
+  border: 1px solid transparent;
+  border-radius: 0.45rem;
+  background: var(--couleur-bleu-fonce);
+  color: #fff;
+  font-size: 0.84rem;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.bouton:hover:not(:disabled) {
+  background: #1a4166;
+}
+
+.bouton:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.bouton--secondaire {
+  border-color: var(--couleur-bordure);
+  background: #fff;
+  color: var(--couleur-bleu-fonce);
+}
+
+.bouton--secondaire:hover:not(:disabled) {
+  background: var(--couleur-bleu-clair);
+}
+
+.bouton--danger {
+  background: var(--couleur-rouge-doux);
+}
+
+.bouton--danger:hover:not(:disabled) {
+  background: var(--couleur-rouge-fonce);
+}
+
+.bouton--discret {
+  border-color: var(--couleur-bordure);
+  background: transparent;
+  color: var(--couleur-texte-secondaire);
+}
+
+.bouton--discret:hover:not(:disabled) {
+  background: var(--couleur-fond);
+}
+
+.bouton--petit {
+  min-height: 1.9rem;
+  padding: 0.3rem 0.6rem;
+  font-size: 0.76rem;
+}
+
+.formulaire {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.champ {
+  display: grid;
+  gap: 0.3rem;
+}
+
+.champ label {
+  color: var(--couleur-bleu-fonce);
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.champ input,
+.champ select,
+.champ textarea {
+  width: 100%;
+  min-height: 2.45rem;
+  padding: 0.55rem 0.65rem;
+  border: 1px solid var(--couleur-bordure);
+  border-radius: 0.4rem;
+  background: #fff;
+  color: var(--couleur-texte);
+}
+
+.champ textarea {
+  min-height: 8rem;
+  resize: vertical;
+}
+
+.champ input:focus,
+.champ select:focus,
+.champ textarea:focus {
+  border-color: var(--couleur-bleu);
+  outline: 3px solid rgb(31 95 139 / 14%);
+}
+
+.champ input.ng-invalid.ng-touched,
+.champ select.ng-invalid.ng-touched,
+.champ textarea.ng-invalid.ng-touched {
+  border-color: var(--couleur-rouge-doux);
+}
+
+.champ__erreur {
+  color: var(--couleur-rouge-fonce);
+  font-size: 0.76rem;
+}
+
+.champ__aide {
+  color: var(--couleur-texte-secondaire);
+  font-size: 0.76rem;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  margin-top: 1rem;
+}
+
+.actions--droite {
+  justify-content: flex-end;
+}
+
+.filtres {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.7rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+.filtres .champ {
+  min-width: 180px;
+}
+
+.liste-cartes {
+  display: grid;
+  gap: 0.8rem;
+}
+
+.ligne-rupture {
+  border: 0;
+  border-top: 1px solid var(--couleur-bordure);
+  margin: 1rem 0;
+}
+
+.texte-avec-retour {
+  white-space: pre-wrap;
+}
+
+.badge-statut {
+  display: inline-flex;
+  border-radius: 999px;
+  padding: 0.2rem 0.65rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.badge-statut--en_analyse {
+  color: #7a4a00;
+  background: #fff1d6;
+}
+
+.badge-statut--analyse_terminee {
+  color: var(--couleur-vert-fonce);
+  background: var(--couleur-vert-tres-clair);
+}
+
+.badge-statut--archivee {
+  color: var(--couleur-texte-secondaire);
+  background: var(--couleur-fond);
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
+  margin-top: 1rem;
+}
+
+.pagination span {
+  color: var(--couleur-texte-secondaire);
+  font-size: 0.82rem;
+}
+
+.notice {
+  border-left: 4px solid var(--couleur-bleu);
+  padding: 0.75rem 0.9rem;
+  background: var(--couleur-bleu-clair);
+  color: var(--couleur-bleu-fonce);
+  font-size: 0.84rem;
+}
+
+.notice--avertissement {
+  border-left-color: #d89a25;
+  background: #fff7e3;
+  color: #7a4a00;
+}
+
+.notice--succes {
+  border-left-color: var(--couleur-vert);
+  background: var(--couleur-vert-tres-clair);
+  color: var(--couleur-vert-fonce);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (max-width: 640px) {
+  .conteneur {
+    width: min(100% - 1.2rem, 1180px);
+  }
+
+  .page {
+    padding-top: 1.1rem;
+  }
+
+  .entete-page {
+    flex-direction: column;
+  }
+
+  .filtres {
+    align-items: stretch;
+  }
+
+  .filtres .champ {
+    flex: 1 1 100%;
+  }
+}

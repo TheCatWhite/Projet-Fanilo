@@ -1,0 +1,28 @@
+.chargeur {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 2rem 1rem;
+  color: var(--couleur-texte-secondaire);
+}
+
+.chargeur__rond {
+  width: 1.4rem;
+  height: 1.4rem;
+  border: 3px solid var(--couleur-bordure);
+  border-top-color: var(--couleur-bleu);
+  border-radius: 50%;
+  animation: rotation 0.8s linear infinite;
+}
+
+p {
+  margin: 0;
+  font-size: 0.92rem;
+}
+
+@keyframes rotation {
+  to {
+    transform: rotate(360deg);
+  }
+}
