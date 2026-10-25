@@ -1,13 +1,7 @@
 import { AlerteCompte } from './alerte-compte.model';
 
 export type Plateforme =
-  | 'facebook'
-  | 'messenger'
-  | 'whatsapp'
-  | 'tiktok'
-  | 'youtube'
-  | 'site_web'
-  | 'autre';
+  'facebook' | 'messenger' | 'whatsapp' | 'tiktok' | 'youtube' | 'site_web' | 'autre';
 
 export const LIBELLES_PLATEFORME: Record<Plateforme, string> = {
   facebook: 'Facebook',

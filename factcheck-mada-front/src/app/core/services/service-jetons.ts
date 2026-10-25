@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 
 /**
  * Centralise le stockage local des jetons JWT.
@@ -10,9 +10,10 @@ import { Injectable } from '@angular/core';
 export class ServiceJetons {
   private readonly cleJetonAcces = 'factcheck.jeton_acces';
   private readonly cleJetonRafraichissement = 'factcheck.jeton_rafraichissement';
+  private readonly jetonAcces = signal<string | null>(this.lire(this.cleJetonAcces));
 
   obtenirJetonAcces(): string | null {
-    return this.lire(this.cleJetonAcces);
+    return this.jetonAcces();
   }
 
   obtenirJetonRafraichissement(): string | null {
@@ -20,17 +21,19 @@ export class ServiceJetons {
   }
 
   enregistrerJetons(jetonAcces: string, jetonRafraichissement: string): void {
-    this.ecrire(this.cleJetonAcces, jetonAcces);
+    this.enregistrerJetonAcces(jetonAcces);
     this.ecrire(this.cleJetonRafraichissement, jetonRafraichissement);
   }
 
   enregistrerJetonAcces(jetonAcces: string): void {
     this.ecrire(this.cleJetonAcces, jetonAcces);
+    this.jetonAcces.set(jetonAcces);
   }
 
   supprimerJetons(): void {
     this.supprimer(this.cleJetonAcces);
     this.supprimer(this.cleJetonRafraichissement);
+    this.jetonAcces.set(null);
   }
 
   aUnJetonAcces(): boolean {

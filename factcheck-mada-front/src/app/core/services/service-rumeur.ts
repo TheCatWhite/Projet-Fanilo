@@ -21,9 +21,7 @@ export class ServiceRumeur {
   private readonly serviceAnalyse = inject(ServiceAnalyse);
   private readonly urlRumeurs = `${environment.apiUrl}rumeurs`;
 
-  obtenirRumeurs(
-    filtres: FiltresRumeurs = {},
-  ): Observable<ReponsePaginee<RumeurListe>> {
+  obtenirRumeurs(filtres: FiltresRumeurs = {}): Observable<ReponsePaginee<RumeurListe>> {
     let parametres = new HttpParams();
 
     if (filtres.page !== undefined) {
@@ -51,27 +49,21 @@ export class ServiceRumeur {
       parametres = parametres.set('tri', filtres.tri);
     }
 
-    return this.http.get<ReponsePaginee<RumeurListe>>(this.urlRumeurs, {
+    return this.http.get<ReponsePaginee<RumeurListe>>(`${this.urlRumeurs}/`, {
       params: parametres,
     });
   }
 
   creerRumeur(donnees: DonneesCreationRumeur): Observable<ReponseCreationRumeur> {
-    return this.http.post<ReponseCreationRumeur>(this.urlRumeurs, donnees);
+    return this.http.post<ReponseCreationRumeur>(`${this.urlRumeurs}/`, donnees);
   }
 
   obtenirRumeur(id: number): Observable<RumeurDetail> {
     return this.http.get<RumeurDetail>(`${this.urlRumeurs}/${id}/`);
   }
 
-  modifierRumeur(
-    id: number,
-    donnees: DonneesModificationRumeur,
-  ): Observable<RumeurDetail> {
-    return this.http.patch<RumeurDetail>(
-      `${this.urlRumeurs}/${id}/`,
-      donnees,
-    );
+  modifierRumeur(id: number, donnees: DonneesModificationRumeur): Observable<RumeurDetail> {
+    return this.http.patch<RumeurDetail>(`${this.urlRumeurs}/${id}/`, donnees);
   }
 
   supprimerRumeur(id: number): Observable<void> {

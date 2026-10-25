@@ -12,12 +12,7 @@ import { validateurMotsDePasse } from '../../../shared/validateurs/mots-de-passe
 @Component({
   selector: 'app-inscription',
   standalone: true,
-  imports: [
-    ReactiveFormsModule,
-    RouterLink,
-    ComposantChargeur,
-    ComposantMessageErreur,
-  ],
+  imports: [ReactiveFormsModule, RouterLink, ComposantChargeur, ComposantMessageErreur],
   templateUrl: './inscription.component.html',
   styleUrl: './inscription.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -35,21 +30,11 @@ export class ComposantInscription {
     {
       nom_utilisateur: [
         '',
-        [
-          Validators.required,
-          Validators.minLength(3),
-          Validators.maxLength(150),
-        ],
+        [Validators.required, Validators.minLength(3), Validators.maxLength(150)],
       ],
       email: ['', [Validators.required, Validators.email]],
-      mot_de_passe: [
-        '',
-        [Validators.required, Validators.minLength(8)],
-      ],
-      confirmation_mot_de_passe: [
-        '',
-        [Validators.required, Validators.minLength(8)],
-      ],
+      mot_de_passe: ['', [Validators.required, Validators.minLength(8)]],
+      confirmation_mot_de_passe: ['', [Validators.required, Validators.minLength(8)]],
       redaction: ['', [Validators.maxLength(150)]],
     },
     { validators: validateurMotsDePasse },

@@ -14,11 +14,14 @@
         <a class="bouton bouton--secondaire" [routerLink]="['/rumeurs', rumeurId, 'propagation']">
           Propagation
         </a>
-        <a class="bouton bouton--secondaire" [routerLink]="['/rumeurs', rumeurId, 'publications', 'ajouter']">
+        <a
+          class="bouton bouton--secondaire"
+          [routerLink]="['/rumeurs', rumeurId, 'publications', 'ajouter']"
+        >
           Ajouter une publication
         </a>
         <button class="bouton" type="button" [disabled]="generation()" (click)="genererRapport()">
-          {{ generation() ? 'Génération…' : (rapport() ? 'Regénérer la fiche' : 'Générer la fiche') }}
+          {{ generation() ? 'Génération…' : rapport() ? 'Regénérer la fiche' : 'Générer la fiche' }}
         </button>
       </div>
     </header>
@@ -54,7 +57,9 @@
                 [niveau]="fiche.niveau_risque"
                 [libelle]="fiche.niveau_risque_libelle"
               />
-              <span class="rapport__date">Généré le {{ fiche.genere_le | dateFrancaise: true }}</span>
+              <span class="rapport__date"
+                >Généré le {{ fiche.genere_le | dateFrancaise: true }}</span
+              >
             </div>
             <p class="rapport__mention">
               <strong>Analyse automatique — vérification humaine requise.</strong>
@@ -138,8 +143,8 @@
             <section class="panneau">
               <h2>Téléchargements</h2>
               <p class="petit-texte">
-                Les fichiers sont générés par le backend et téléchargés avec
-                l’authentification active.
+                Les fichiers sont générés par le backend et téléchargés avec l’authentification
+                active.
               </p>
               <div class="rapport__telechargements">
                 <button
@@ -203,14 +208,19 @@
             <div>
               <h2>Aucune fiche générée</h2>
               <p class="texte-secondaire">
-                Générez une fiche pour analyser le texte du dossier, les comptes
-                et la propagation, puis produire une synthèse téléchargeable.
+                Générez une fiche pour analyser le texte du dossier, les comptes et la propagation,
+                puis produire une synthèse téléchargeable.
               </p>
               <p class="rapport__mention">
                 <strong>Analyse automatique — vérification humaine requise.</strong>
               </p>
             </div>
-            <button class="bouton" type="button" [disabled]="generation()" (click)="genererRapport()">
+            <button
+              class="bouton"
+              type="button"
+              [disabled]="generation()"
+              (click)="genererRapport()"
+            >
               {{ generation() ? 'Génération…' : 'Générer la fiche' }}
             </button>
           </div>

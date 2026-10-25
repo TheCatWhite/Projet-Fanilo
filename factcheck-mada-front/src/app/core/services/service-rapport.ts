@@ -3,10 +3,7 @@ import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { environment } from '../../../environments/environment';
-import {
-  RapportVerification,
-  ReponseRapportGenere,
-} from '../models/rapport-verification.model';
+import { RapportVerification, ReponseRapportGenere } from '../models/rapport-verification.model';
 
 @Injectable({ providedIn: 'root' })
 export class ServiceRapport {
@@ -21,22 +18,14 @@ export class ServiceRapport {
   }
 
   obtenirRapport(rumeurId: number): Observable<RapportVerification> {
-    return this.http.get<RapportVerification>(
-      `${this.urlRumeurs}/${rumeurId}/rapport/`,
-    );
+    return this.http.get<RapportVerification>(`${this.urlRumeurs}/${rumeurId}/rapport/`);
   }
 
   telechargerPdf(rumeurId: number): Observable<Blob> {
-    return this.http.get(
-      `${this.urlRumeurs}/${rumeurId}/rapport/pdf/`,
-      { responseType: 'blob' },
-    );
+    return this.http.get(`${this.urlRumeurs}/${rumeurId}/rapport/pdf/`, { responseType: 'blob' });
   }
 
   telechargerImage(rumeurId: number): Observable<Blob> {
-    return this.http.get(
-      `${this.urlRumeurs}/${rumeurId}/rapport/image/`,
-      { responseType: 'blob' },
-    );
+    return this.http.get(`${this.urlRumeurs}/${rumeurId}/rapport/image/`, { responseType: 'blob' });
   }
 }

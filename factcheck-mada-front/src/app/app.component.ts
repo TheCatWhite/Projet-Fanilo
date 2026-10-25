@@ -30,14 +30,11 @@ export class ComposantApplication {
 
   readonly estPageAuthentification = computed(
     () =>
-      this.urlCourante().startsWith('/connexion') ||
-      this.urlCourante().startsWith('/inscription'),
+      this.urlCourante().startsWith('/connexion') || this.urlCourante().startsWith('/inscription'),
   );
 
   readonly afficherNavigation = computed(
-    () =>
-      this.serviceAuthentification.estConnecte() &&
-      !this.estPageAuthentification(),
+    () => this.serviceAuthentification.estConnecte() && !this.estPageAuthentification(),
   );
 
   constructor() {

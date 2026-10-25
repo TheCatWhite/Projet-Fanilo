@@ -1,9 +1,12 @@
-# FactCheck Mada — Back-end
+# FactCheck Mada — Application full-stack
 
 Plateforme d'investigation pour journalistes malgaches. Elle aide à retrouver la
 première occurrence publique d'une rumeur (« Source Zéro »), à documenter sa
 propagation sur Facebook, Messenger, WhatsApp, TikTok, YouTube et le web, puis à
 produire une fiche de vérification pour la salle de rédaction.
+
+Le projet contient le backend Django/DRF à la racine et le frontend Angular dans
+`factcheck-mada-front/`.
 
 > **Principe fondamental** : l'application ne dit jamais si une information est
 > vraie ou fausse. Elle fournit des indices, une traçabilité, des alertes et une
@@ -24,6 +27,9 @@ produire une fiche de vérification pour la salle de rédaction.
   recommandations, export PDF et image PNG.
 - Tableau de bord agrégé.
 - Aucun scraping : seules les données publiques saisies par le journaliste sont utilisées.
+- Frontend Angular responsive, en français, avec navigation protégée, formulaires
+  réactifs, timeline CSS, téléchargements PDF/PNG authentifiés et tests unitaires
+  et end-to-end.
 
 ---
 
@@ -32,6 +38,8 @@ produire une fiche de vérification pour la salle de rédaction.
 - Python 3.12, Django 5.2, Django REST Framework 3.16.
 - SimpleJWT, django-cors-headers, drf-spectacular, Pillow, ReportLab,
   python-dotenv.
+- Angular 21.2.25, TypeScript strict, SCSS, RxJS, Reactive Forms, Vitest et
+  Playwright.
 - SQLite pour le MVP, PostgreSQL préparé par variables d'environnement.
 
 ```text
@@ -57,6 +65,7 @@ investigation/
   tests.py               tests automatisés
 media/                   captures, PDF et images générés
 docs/                    documentation API, historique, scénario, Postman
+factcheck-mada-front/    frontend Angular (sources, tests unitaires et e2e)
 ```
 
 Les vues ne contiennent pas de logique métier : elles délèguent aux services,
@@ -78,6 +87,18 @@ cp .env.example .env
 
 Le fichier `.env` est ignoré par Git. Pour un démarrage rapide, les valeurs par
 défaut du projet fonctionnent en développement.
+
+### Frontend Angular
+
+```bash
+cd /home/catwhite/Bureau/Fanilo/factcheck-mada-front
+npm install
+npm start
+```
+
+Le frontend est servi sur [http://localhost:5173](http://localhost:5173). Voir
+[factcheck-mada-front/README.md](factcheck-mada-front/README.md) pour le détail
+des cinq étapes, l'arborescence et les tests.
 
 ### Base de données et compte administrateur
 
@@ -115,7 +136,7 @@ Variables principales (`.env`) :
 | `CLE_SECRETE` | clé de dev | Clé secrète Django |
 | `MODE_DEBUG` | `True` | Mode debug |
 | `HOTES_AUTORISES` | `localhost,127.0.0.1` | Hôtes autorisés |
-| `ORIGINES_CORS` | `http://localhost:3000,http://localhost:5173` | Origines React |
+| `ORIGINES_CORS` | `http://localhost:3000,http://localhost:5173` | Origines du frontend |
 | `DOCUMENTATION_ACTIVE` | `True` | Expose Swagger/Redoc et le schéma OpenAPI |
 | `BASE_DONNEES_MOTEUR` | `sqlite3` | `sqlite3` ou `postgresql` |
 | `BASE_DONNEES_NOM` | `db.sqlite3` | Nom de la base |
@@ -163,7 +184,7 @@ exigent l'en-tête `Authorization: Bearer <jeton_acces>`.
 | GET/POST | `/rumeurs/` | Lister / créer une rumeur |
 | GET/PATCH/DELETE | `/rumeurs/{id}/` | Détail / modifier / supprimer |
 | GET/POST | `/rumeurs/{id}/publications/` | Lister / ajouter une publication |
-| GET | `/rumeurs/{id}/arbre-propagation/` | Arbre JSON pour React |
+| GET | `/rumeurs/{id}/arbre-propagation/` | Arbre JSON pour la timeline Angular |
 | POST | `/publications/{id}/analyser-compte/` | Relancer l'analyse du compte |
 | POST | `/rumeurs/{id}/analyser-texte/` | Relancer l'analyse du texte |
 | POST | `/rumeurs/{id}/generer-rapport/` | Générer / mettre à jour le rapport |
@@ -172,12 +193,13 @@ exigent l'en-tête `Authorization: Bearer <jeton_acces>`.
 | GET | `/rumeurs/{id}/rapport/image/` | Télécharger l'image PNG |
 | GET | `/tableau-de-bord/statistiques/` | Statistiques agrégées |
 
-Documentation interactive : [http://localhost:8000/api/docs/](http://localhost:8000/api/docs/)  
-Documentation détaillée : [docs/API.md](docs/API.md).  
-Guide des cinq étapes : [docs/GUIDE_ETAPES.md](docs/GUIDE_ETAPES.md).  
-Historique d'implémentation : [docs/HISTORIQUE.md](docs/HISTORIQUE.md).  
-Scénario complet : [docs/SCENARIO_TEST.md](docs/SCENARIO_TEST.md).  
-Collection Postman : [docs/collection_postman.json](docs/collection_postman.json).
+- Documentation interactive : [http://localhost:8000/api/docs/](http://localhost:8000/api/docs/)
+- Documentation détaillée : [docs/API.md](docs/API.md)
+- Guide des cinq étapes backend : [docs/GUIDE_ETAPES.md](docs/GUIDE_ETAPES.md)
+- Guide du frontend : [factcheck-mada-front/README.md](factcheck-mada-front/README.md)
+- Historique d'implémentation : [docs/HISTORIQUE.md](docs/HISTORIQUE.md)
+- Scénario complet : [docs/SCENARIO_TEST.md](docs/SCENARIO_TEST.md)
+- Collection Postman : [docs/collection_postman.json](docs/collection_postman.json)
 
 ### Tester avec Swagger
 
@@ -254,6 +276,18 @@ Les tests couvrent : normalisation et similarité, inscription/connexion/JWT,
 isolation entre journalistes, doublons, filtres, propagation, première détection,
 alertes compte et texte, upload d'image, rapport, exports PDF/PNG, tableau de bord,
 administration, commande de démonstration et disponibilité de Swagger/OpenAPI.
+
+Frontend :
+
+```bash
+cd factcheck-mada-front
+npm run build
+npm test -- --watch=false
+npm run test:e2e        # backend et frontend lancés, Google Chrome disponible
+```
+
+Résultats de la dernière validation : build OK, **15 tests unitaires** et
+**3 scénarios Playwright** réussis.
 
 ---
 

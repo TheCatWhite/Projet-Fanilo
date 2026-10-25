@@ -24,9 +24,9 @@ export const routes: Routes = [
     title: 'Tableau de bord | FactCheck Mada',
     canActivate: [gardeAuthentification],
     loadComponent: () =>
-      import(
-        './features/tableau-de-bord/tableau-de-bord/tableau-de-bord.component'
-      ).then((module) => module.ComposantTableauDeBord),
+      import('./features/tableau-de-bord/tableau-de-bord/tableau-de-bord.component').then(
+        (module) => module.ComposantTableauDeBord,
+      ),
   },
   {
     path: 'rumeurs',
@@ -51,27 +51,27 @@ export const routes: Routes = [
     title: 'Ajouter une publication | FactCheck Mada',
     canActivate: [gardeAuthentification],
     loadComponent: () =>
-      import(
-        './features/publications/ajouter-publication/ajouter-publication.component'
-      ).then((module) => module.ComposantAjouterPublication),
+      import('./features/publications/ajouter-publication/ajouter-publication.component').then(
+        (module) => module.ComposantAjouterPublication,
+      ),
   },
   {
     path: 'rumeurs/:id/propagation',
     title: 'Propagation | FactCheck Mada',
     canActivate: [gardeAuthentification],
     loadComponent: () =>
-      import(
-        './features/propagation/arbre-propagation/arbre-propagation.component'
-      ).then((module) => module.ComposantArbrePropagation),
+      import('./features/propagation/arbre-propagation/arbre-propagation.component').then(
+        (module) => module.ComposantArbrePropagation,
+      ),
   },
   {
     path: 'rumeurs/:id/rapport',
     title: 'Fiche de vérification | FactCheck Mada',
     canActivate: [gardeAuthentification],
     loadComponent: () =>
-      import(
-        './features/rapport/fiche-verification/fiche-verification.component'
-      ).then((module) => module.ComposantFicheVerification),
+      import('./features/rapport/fiche-verification/fiche-verification.component').then(
+        (module) => module.ComposantFicheVerification,
+      ),
   },
   {
     path: 'rumeurs/:id',

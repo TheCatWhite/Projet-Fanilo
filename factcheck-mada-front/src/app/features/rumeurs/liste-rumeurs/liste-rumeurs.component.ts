@@ -12,11 +12,7 @@ import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { debounceTime } from 'rxjs';
 
-import {
-  FiltresRumeurs,
-  RumeurListe,
-  StatutRumeur,
-} from '../../../core/models/rumeur.model';
+import { FiltresRumeurs, RumeurListe, StatutRumeur } from '../../../core/models/rumeur.model';
 import { ServiceErreur } from '../../../core/services/service-erreur';
 import { ServiceRumeur } from '../../../core/services/service-rumeur';
 import { ComposantBadgeRisque } from '../../../shared/composants/badge-risque/badge-risque.component';
@@ -59,9 +55,7 @@ export class ComposantListeRumeurs implements OnInit {
     statut: '' as StatutRumeur | '',
   });
 
-  readonly nombrePages = computed(() =>
-    Math.max(1, Math.ceil(this.total() / this.taillePage)),
-  );
+  readonly nombrePages = computed(() => Math.max(1, Math.ceil(this.total() / this.taillePage)));
 
   constructor() {
     this.formulaire.valueChanges

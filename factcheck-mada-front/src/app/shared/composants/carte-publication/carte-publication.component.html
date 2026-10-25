@@ -1,7 +1,4 @@
-<article
-  class="publication"
-  [class.publication--source-zero]="publication.est_premiere_detection"
->
+<article class="publication" [class.publication--source-zero]="publication.est_premiere_detection">
   <div class="publication__entete">
     <span class="publication__icone" aria-hidden="true">{{ icone }}</span>
     <div class="publication__identite">
@@ -33,7 +30,7 @@
       <div>
         <dt>Publication</dt>
         <dd>
-          <a [href]="publication.url_publication" target="_blank" rel="noopener">
+          <a [href]="publication.url_publication" target="_blank" rel="noopener noreferrer">
             Ouvrir la source
           </a>
         </dd>

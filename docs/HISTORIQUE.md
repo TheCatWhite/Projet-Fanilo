@@ -232,16 +232,73 @@ Un scénario manuel a également validé :
 - l'arbre de propagation ;
 - le rapport et ses exports PDF/PNG ;
 - les réponses `401`, `404` et `400` ;
-- le préflight CORS depuis React ;
+- le préflight CORS depuis Angular ;
 - le refus d'un faux fichier image.
 
 ---
 
-## 9. Limites connues
+## 9. Frontend Angular
+
+### Livraison
+
+- Projet créé dans `factcheck-mada-front/` avec Angular 21.2.25, TypeScript
+  strict, SCSS, routing, Reactive Forms et RxJS.
+- Serveur de développement configuré sur le port `5173`, déjà autorisé par le
+  CORS Django.
+- Pages livrées :
+  - `/connexion` ;
+  - `/inscription` ;
+  - `/tableau-de-bord` ;
+  - `/rumeurs` ;
+  - `/rumeurs/nouvelle` ;
+  - `/rumeurs/{id}` ;
+  - `/rumeurs/{id}/publications/ajouter` ;
+  - `/rumeurs/{id}/propagation` ;
+  - `/rumeurs/{id}/rapport`.
+- Composants partagés : `badge-risque`, `carte-alerte`, `chargeur`,
+  `message-erreur`, `barre-navigation`, `carte-publication`,
+  `carte-statistique`, `badge-source-zero` et `etat-vide`.
+- Intercepteur JWT avec refresh unique via `HttpBackend`, guard de route,
+  stockage des jetons sous `factcheck.jeton_acces` et
+  `factcheck.jeton_rafraichissement`.
+- Gestion du doublon de rumeur comme succès `200` avec `cree: false`.
+- Ajout de publication en `FormData`, capture limitée à 5 Mo.
+- Timeline de propagation en CSS, sans bibliothèque de graphes.
+- Téléchargement authentifié du PDF et du PNG en `Blob`.
+- Mention de prudence dans la fiche :
+  « Analyse automatique — vérification humaine requise ».
+- Inscription limitée au rôle journaliste, conformément au backend.
+
+### Validation
+
+```bash
+cd factcheck-mada-front
+npm run build
+npm test -- --watch=false
+npm run test:e2e
+```
+
+Résultats :
+
+- build de production réussi ;
+- **15 tests unitaires** réussis ;
+- **3 scénarios Playwright** réussis : parcours complet de consultation et
+  rapport, erreur d'identifiants, création puis suppression d'une rumeur ;
+- backend et frontend testés ensemble sur `http://localhost:8000` et
+  `http://localhost:5173`.
+
+### Documentation
+
+Le guide détaillé, l'arborescence, les contrats API et les erreurs fréquentes
+sont dans `factcheck-mada-front/README.md`.
+
+---
+
+## 10. Limites connues
 
 - Aucun scraping ni connexion non autorisée aux réseaux sociaux.
 - Les publications sont saisies manuellement dans le MVP.
-- Pas encore de frontend React livré avec ce backend.
+- Le frontend Angular est livré ; il reste à le déployer et à le valider sur un corpus réel.
 - Les médias sont servis publiquement en mode `DEBUG` ; en production, utiliser
   un stockage privé ou des URLs signées.
 - Les intégrations Facebook, TikTok et WhatsApp restent des points d'extension.
@@ -249,9 +306,9 @@ Un scénario manuel a également validé :
 
 ---
 
-## 10. Suites possibles
+## 11. Suites possibles
 
-1. Construire l'interface React et brancher tous les endpoints.
+1. Déployer l'interface Angular avec le backend et former les journalistes.
 2. Déployer avec PostgreSQL, Gunicorn/Nginx, HTTPS et stockage privé.
 3. Ajouter la collaboration, l'historique des modifications et les
    notifications.

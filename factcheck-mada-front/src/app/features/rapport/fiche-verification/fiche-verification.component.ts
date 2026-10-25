@@ -5,10 +5,7 @@ import { forkJoin, of, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
 import { ArbrePropagation } from '../../../core/models/arbre-propagation.model';
-import {
-  NiveauRisque,
-  RapportVerification,
-} from '../../../core/models/rapport-verification.model';
+import { NiveauRisque, RapportVerification } from '../../../core/models/rapport-verification.model';
 import { RumeurDetail } from '../../../core/models/rumeur.model';
 import { ServiceAnalyse } from '../../../core/services/service-analyse';
 import { ServiceErreur } from '../../../core/services/service-erreur';
@@ -62,16 +59,12 @@ export class ComposantFicheVerification {
 
   readonly premierePublication = computed(
     () =>
-      this.rumeur()?.publications.find(
-        (publication) => publication.est_premiere_detection,
-      ) ?? null,
+      this.rumeur()?.publications.find((publication) => publication.est_premiere_detection) ?? null,
   );
 
   readonly noeudsTries = computed(() =>
     [...(this.arbre()?.noeuds ?? [])].sort(
-      (a, b) =>
-        new Date(a.date_publication).getTime() -
-        new Date(b.date_publication).getTime(),
+      (a, b) => new Date(a.date_publication).getTime() - new Date(b.date_publication).getTime(),
     ),
   );
 

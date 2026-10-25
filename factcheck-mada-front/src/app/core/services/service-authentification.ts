@@ -19,36 +19,24 @@ export class ServiceAuthentification {
   private readonly urlBase = `${environment.apiUrl}authentification`;
 
   readonly profil = signal<Journaliste | null>(null);
-  readonly estConnecte = computed(
-    () => this.profil() !== null || this.jetons.aUnJetonAcces(),
-  );
+  readonly estConnecte = computed(() => this.jetons.aUnJetonAcces());
 
   connexion(donnees: IdentifiantsConnexion): Observable<ReponseAuthentification> {
-    return this.http
-      .post<ReponseAuthentification>(`${this.urlBase}/connexion/`, donnees)
-      .pipe(
-        tap((reponse) => {
-          this.jetons.enregistrerJetons(
-            reponse.jeton_acces,
-            reponse.jeton_rafraichissement,
-          );
-          this.profil.set(reponse.journaliste);
-        }),
-      );
+    return this.http.post<ReponseAuthentification>(`${this.urlBase}/connexion/`, donnees).pipe(
+      tap((reponse) => {
+        this.jetons.enregistrerJetons(reponse.jeton_acces, reponse.jeton_rafraichissement);
+        this.profil.set(reponse.journaliste);
+      }),
+    );
   }
 
   inscription(donnees: DonneesInscription): Observable<ReponseAuthentification> {
-    return this.http
-      .post<ReponseAuthentification>(`${this.urlBase}/inscription/`, donnees)
-      .pipe(
-        tap((reponse) => {
-          this.jetons.enregistrerJetons(
-            reponse.jeton_acces,
-            reponse.jeton_rafraichissement,
-          );
-          this.profil.set(reponse.journaliste);
-        }),
-      );
+    return this.http.post<ReponseAuthentification>(`${this.urlBase}/inscription/`, donnees).pipe(
+      tap((reponse) => {
+        this.jetons.enregistrerJetons(reponse.jeton_acces, reponse.jeton_rafraichissement);
+        this.profil.set(reponse.journaliste);
+      }),
+    );
   }
 
   rafraichirJeton(): Observable<ReponseRafraichissement> {

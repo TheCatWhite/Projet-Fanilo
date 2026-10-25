@@ -1,14 +1,8 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 
-import {
-  ArbrePropagation,
-  LienArbre,
-} from '../../../core/models/arbre-propagation.model';
-import {
-  LIBELLES_PLATEFORME,
-  Plateforme,
-} from '../../../core/models/publication-source.model';
+import { ArbrePropagation, LienArbre } from '../../../core/models/arbre-propagation.model';
+import { LIBELLES_PLATEFORME, Plateforme } from '../../../core/models/publication-source.model';
 import { ServiceAnalyse } from '../../../core/services/service-analyse';
 import { ServiceErreur } from '../../../core/services/service-erreur';
 import { ComposantBadgeSourceZero } from '../../../shared/composants/badge-source-zero/badge-source-zero.component';
@@ -46,9 +40,7 @@ export class ComposantArbrePropagation {
 
   readonly noeudsTries = computed(() =>
     [...(this.arbre()?.noeuds ?? [])].sort(
-      (a, b) =>
-        new Date(a.date_publication).getTime() -
-        new Date(b.date_publication).getTime(),
+      (a, b) => new Date(a.date_publication).getTime() - new Date(b.date_publication).getTime(),
     ),
   );
 

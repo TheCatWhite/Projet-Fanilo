@@ -1,8 +1,5 @@
 @if (afficherNavigation()) {
-  <app-barre-navigation
-    [profil]="profil()"
-    (deconnexion)="deconnecter()"
-  />
+  <app-barre-navigation [profil]="profil()" (deconnexion)="deconnecter()" />
 }
 
 <main class="contenu-principal">

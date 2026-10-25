@@ -11,11 +11,7 @@ import { ComposantCarteAlerte } from '../carte-alerte/carte-alerte.component';
 @Component({
   selector: 'app-carte-publication',
   standalone: true,
-  imports: [
-    PipeDateFrancaise,
-    ComposantBadgeSourceZero,
-    ComposantCarteAlerte,
-  ],
+  imports: [PipeDateFrancaise, ComposantBadgeSourceZero, ComposantCarteAlerte],
   templateUrl: './carte-publication.component.html',
   styleUrl: './carte-publication.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -52,11 +52,7 @@ export const intercepteurJwt: HttpInterceptorFn = (requete, suivant) => {
 
   return suivant(requeteAutorisee).pipe(
     catchError((erreur: unknown) => {
-      if (
-        publique ||
-        !(erreur instanceof HttpErrorResponse) ||
-        erreur.status !== 401
-      ) {
+      if (publique || !(erreur instanceof HttpErrorResponse) || erreur.status !== 401) {
         return throwError(() => erreur);
       }
 
@@ -67,6 +63,10 @@ export const intercepteurJwt: HttpInterceptorFn = (requete, suivant) => {
       }
 
       return rafraichir(backend, jetons, jetonRafraichissement).pipe(
+        catchError((erreurRafraichissement: unknown) => {
+          deconnecter(routeur, jetons);
+          return throwError(() => erreurRafraichissement);
+        }),
         switchMap((nouveauJeton) =>
           suivant(
             requete.clone({
@@ -74,10 +74,6 @@ export const intercepteurJwt: HttpInterceptorFn = (requete, suivant) => {
             }),
           ),
         ),
-        catchError((erreurRafraichissement: unknown) => {
-          deconnecter(routeur, jetons);
-          return throwError(() => erreurRafraichissement);
-        }),
       );
     }),
   );

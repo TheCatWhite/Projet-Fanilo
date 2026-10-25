@@ -1,7 +1,4 @@
-export type RoleJournaliste =
-  | 'journaliste'
-  | 'redacteur_en_chef'
-  | 'administrateur';
+export type RoleJournaliste = 'journaliste' | 'redacteur_en_chef' | 'administrateur';
 
 export interface Journaliste {
   id: number;

@@ -5,10 +5,7 @@ import { Pipe, PipeTransform } from '@angular/core';
   standalone: true,
 })
 export class PipeDateFrancaise implements PipeTransform {
-  transform(
-    valeur: string | Date | null | undefined,
-    avecHeure = false,
-  ): string {
+  transform(valeur: string | Date | null | undefined, avecHeure = false): string {
     if (!valeur) {
       return '—';
     }

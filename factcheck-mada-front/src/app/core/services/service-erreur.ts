@@ -18,21 +18,15 @@ export class ServiceErreur {
       }
 
       if (erreur.status === 401) {
-        return [
-          'Votre session a expiré. Veuillez vous reconnecter.',
-        ];
+        return ['Votre session a expiré. Veuillez vous reconnecter.'];
       }
 
       if (erreur.status === 403) {
-        return [
-          'Vous n’avez pas les droits nécessaires pour effectuer cette action.',
-        ];
+        return ['Vous n’avez pas les droits nécessaires pour effectuer cette action.'];
       }
 
       if (erreur.status === 404) {
-        return [
-          'La ressource demandée est introuvable ou ne vous appartient pas.',
-        ];
+        return ['La ressource demandée est introuvable ou ne vous appartient pas.'];
       }
 
       if (erreur.status === 501) {

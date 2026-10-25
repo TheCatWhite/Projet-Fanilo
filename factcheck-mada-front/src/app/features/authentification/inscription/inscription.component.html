@@ -4,15 +4,14 @@
     <p class="authentification__surtitre">Rejoindre la rédaction</p>
     <h1>Créer un compte</h1>
     <p>
-      Centralisez les rumeurs suivies, documentez les publications sources et
-      produisez des fiches de vérification traçables.
+      Centralisez les rumeurs suivies, documentez les publications sources et produisez des fiches
+      de vérification traçables.
     </p>
     <div class="authentification__principe">
       <strong>Rôle attribué</strong>
       <p>
         Pour cette version, le backend attribue automatiquement le rôle
-        <strong>Journaliste</strong>. Les autres rôles sont gérés depuis
-        l’administration Django.
+        <strong>Journaliste</strong>. Les autres rôles sont gérés depuis l’administration Django.
       </p>
     </div>
   </div>
@@ -96,10 +95,7 @@
           formControlName="confirmation_mot_de_passe"
           autocomplete="new-password"
         />
-        @if (
-          confirmationMotDePasse.touched &&
-          formulaire.hasError('motsDePasseDifferents')
-        ) {
+        @if (confirmationMotDePasse.touched && formulaire.hasError('motsDePasseDifferents')) {
           <span class="champ__erreur">Les deux mots de passe ne correspondent pas.</span>
         }
       </div>

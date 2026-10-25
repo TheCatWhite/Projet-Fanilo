@@ -18,12 +18,7 @@ const EXTENSIONS_IMAGES = ['.jpg', '.jpeg', '.png', '.webp', '.gif'];
 @Component({
   selector: 'app-ajouter-publication',
   standalone: true,
-  imports: [
-    ReactiveFormsModule,
-    RouterLink,
-    ComposantChargeur,
-    ComposantMessageErreur,
-  ],
+  imports: [ReactiveFormsModule, RouterLink, ComposantChargeur, ComposantMessageErreur],
   templateUrl: './ajouter-publication.component.html',
   styleUrl: './ajouter-publication.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -35,10 +30,7 @@ export class ComposantAjouterPublication {
   private readonly route = inject(ActivatedRoute);
   private readonly routeur = inject(Router);
 
-  readonly plateformes = Object.entries(LIBELLES_PLATEFORME) as [
-    Plateforme,
-    string,
-  ][];
+  readonly plateformes = Object.entries(LIBELLES_PLATEFORME) as [Plateforme, string][];
   readonly chargement = signal(false);
   readonly messagesErreur = signal<string[]>([]);
   readonly fichierSelectionne = signal<File | null>(null);
@@ -77,15 +69,17 @@ export class ComposantAjouterPublication {
 
     if (fichier.size > TAILLE_MAX_CAPTURE) {
       this.messagesErreur.set(['La capture d’écran ne doit pas dépasser 5 Mo.']);
+      this.fichierSelectionne.set(null);
+      this.nomFichier.set('');
       input.value = '';
       return;
     }
 
     const extension = fichier.name.slice(fichier.name.lastIndexOf('.')).toLowerCase();
     if (!EXTENSIONS_IMAGES.includes(extension)) {
-      this.messagesErreur.set([
-        'Format d’image non accepté. Utilisez JPG, PNG, WEBP ou GIF.',
-      ]);
+      this.messagesErreur.set(['Format d’image non accepté. Utilisez JPG, PNG, WEBP ou GIF.']);
+      this.fichierSelectionne.set(null);
+      this.nomFichier.set('');
       input.value = '';
       return;
     }
@@ -115,10 +109,7 @@ export class ComposantAjouterPublication {
       url_publication: valeurs.url_publication.trim(),
       url_profil_auteur: valeurs.url_profil_auteur.trim(),
       date_creation_compte: valeurs.date_creation_compte || undefined,
-      nombre_abonnes:
-        valeurs.nombre_abonnes === null
-          ? null
-          : Number(valeurs.nombre_abonnes),
+      nombre_abonnes: valeurs.nombre_abonnes === null ? null : Number(valeurs.nombre_abonnes),
       texte_brut: valeurs.texte_brut.trim(),
       capture_ecran: this.fichierSelectionne(),
     };

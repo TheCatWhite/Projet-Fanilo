@@ -3,12 +3,9 @@
     <header class="entete-page">
       <div>
         <p class="tableau-bord__surtitre">Vue d’ensemble</p>
-        <h1>
-          Bonjour{{ profil() ? ' ' + profil()?.nom_utilisateur : '' }}
-        </h1>
+        <h1>Bonjour{{ profil() ? ' ' + profil()?.nom_utilisateur : '' }}</h1>
         <p class="sous-titre">
-          Suivez les rumeurs, les sources et les signaux de propagation de la
-          rédaction.
+          Suivez les rumeurs, les sources et les signaux de propagation de la rédaction.
         </p>
       </div>
       <div class="entete-page__actions">
@@ -110,9 +107,7 @@
                   </div>
                   <div class="repartition__barre">
                     <span
-                      [style.width.%]="
-                        (plateforme.valeur / (stats.total_publications || 1)) * 100
-                      "
+                      [style.width.%]="(plateforme.valeur / (stats.total_publications || 1)) * 100"
                     ></span>
                   </div>
                 </div>
@@ -123,8 +118,7 @@
           <div class="tableau-bord__principe">
             <strong>Rappel méthodologique</strong>
             <p>
-              Ces indicateurs orientent l’enquête. Ils ne constituent pas un
-              verdict de véracité.
+              Ces indicateurs orientent l’enquête. Ils ne constituent pas un verdict de véracité.
             </p>
           </div>
         </aside>

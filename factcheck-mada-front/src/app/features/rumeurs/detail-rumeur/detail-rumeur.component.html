@@ -26,8 +26,8 @@
             </div>
             <h1>{{ dossier.titre }}</h1>
             <p class="sous-titre">
-              Dossier créé le {{ dossier.cree_le | dateFrancaise }} par
-              {{ dossier.cree_par_nom }} · {{ dossier.langue_libelle }}
+              Dossier créé le {{ dossier.cree_le | dateFrancaise }} par {{ dossier.cree_par_nom }} ·
+              {{ dossier.langue_libelle }}
             </p>
           </div>
 
@@ -40,10 +40,7 @@
             >
               {{ chargementAnalyse() ? 'Analyse…' : 'Analyser le texte' }}
             </button>
-            <a
-              class="bouton"
-              [routerLink]="['/rumeurs', dossier.id, 'publications', 'ajouter']"
-            >
+            <a class="bouton" [routerLink]="['/rumeurs', dossier.id, 'publications', 'ajouter']">
               Ajouter une publication
             </a>
             <a
@@ -52,10 +49,7 @@
             >
               Voir la propagation
             </a>
-            <a
-              class="bouton bouton--secondaire"
-              [routerLink]="['/rumeurs', dossier.id, 'rapport']"
-            >
+            <a class="bouton bouton--secondaire" [routerLink]="['/rumeurs', dossier.id, 'rapport']">
               Fiche de vérification
             </a>
             <button
@@ -104,9 +98,7 @@
               <div class="dossier__titre-section">
                 <div>
                   <h2>Source Zéro</h2>
-                  <p class="petit-texte">
-                    Première publication détectée pour cette affirmation.
-                  </p>
+                  <p class="petit-texte">Première publication détectée pour cette affirmation.</p>
                 </div>
               </div>
 
@@ -217,21 +209,16 @@
             <section class="panneau dossier__note">
               <strong>Analyse automatique — vérification humaine requise</strong>
               <p>
-                Les alertes, scores et recommandations sont des aides à
-                l’enquête. Aucun verdict de véracité n’est produit
-                automatiquement.
+                Les alertes, scores et recommandations sont des aides à l’enquête. Aucun verdict de
+                véracité n’est produit automatiquement.
               </p>
             </section>
 
             <section class="panneau">
               <h2>Accès rapides</h2>
               <div class="dossier__liens">
-                <a [routerLink]="['/rumeurs', dossier.id, 'propagation']">
-                  Arbre et chronologie
-                </a>
-                <a [routerLink]="['/rumeurs', dossier.id, 'rapport']">
-                  Fiche de vérification
-                </a>
+                <a [routerLink]="['/rumeurs', dossier.id, 'propagation']"> Arbre et chronologie </a>
+                <a [routerLink]="['/rumeurs', dossier.id, 'rapport']"> Fiche de vérification </a>
                 <a [routerLink]="['/rumeurs', dossier.id, 'publications', 'ajouter']">
                   Ajouter une source
                 </a>

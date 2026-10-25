@@ -4,9 +4,8 @@
       <div>
         <h1>Ajouter une publication</h1>
         <p class="sous-titre">
-          Documentez une occurrence publique de la rumeur. Une capture d’écran
-          est optionnelle ; la détection de propagation repose sur le texte et
-          les métadonnées.
+          Documentez une occurrence publique de la rumeur. Une capture d’écran est optionnelle ; la
+          détection de propagation repose sur le texte et les métadonnées.
         </p>
       </div>
       <div class="entete-page__actions">
@@ -34,11 +33,7 @@
 
           <div class="champ">
             <label for="date_publication">Date et heure de publication</label>
-            <input
-              id="date_publication"
-              type="datetime-local"
-              formControlName="date_publication"
-            />
+            <input id="date_publication" type="datetime-local" formControlName="date_publication" />
             @if (datePublication.touched && datePublication.hasError('required')) {
               <span class="champ__erreur">La date de publication est obligatoire.</span>
             }
@@ -95,14 +90,10 @@
 
         <div class="champ">
           <label for="date_creation_compte">Date de création du compte (facultatif)</label>
-          <input
-            id="date_creation_compte"
-            type="date"
-            formControlName="date_creation_compte"
-          />
+          <input id="date_creation_compte" type="date" formControlName="date_creation_compte" />
           <span class="champ__aide">
-            Une création récente peut être signalée comme indice de risque, sans
-            constituer une preuve à elle seule.
+            Une création récente peut être signalée comme indice de risque, sans constituer une
+            preuve à elle seule.
           </span>
         </div>
 
@@ -132,9 +123,7 @@
           <button class="bouton" type="submit" [disabled]="chargement()">
             {{ chargement() ? 'Enregistrement…' : 'Enregistrer et analyser' }}
           </button>
-          <a class="bouton bouton--secondaire" [routerLink]="['/rumeurs', rumeurId]">
-            Annuler
-          </a>
+          <a class="bouton bouton--secondaire" [routerLink]="['/rumeurs', rumeurId]"> Annuler </a>
         </div>
       </form>
 

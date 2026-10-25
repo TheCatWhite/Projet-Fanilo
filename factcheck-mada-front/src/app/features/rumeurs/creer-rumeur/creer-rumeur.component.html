@@ -4,8 +4,8 @@
       <div>
         <h1>Nouvelle rumeur</h1>
         <p class="sous-titre">
-          Enregistrez une affirmation à investiguer. Le backend détecte les
-          doublons avant de créer un nouveau dossier.
+          Enregistrez une affirmation à investiguer. Le backend détecte les doublons avant de créer
+          un nouveau dossier.
         </p>
       </div>
       <div class="entete-page__actions">
@@ -15,9 +15,8 @@
 
     <div class="panneau">
       <div class="notice">
-        Aucun verdict « vrai » ou « faux » n’est produit ici. Le dossier
-        regroupera ensuite des sources, des alertes et une analyse à valider
-        humainement.
+        Aucun verdict « vrai » ou « faux » n’est produit ici. Le dossier regroupera ensuite des
+        sources, des alertes et une analyse à valider humainement.
       </div>
 
       @if (messagesErreur().length > 0) {
@@ -28,8 +27,8 @@
         <div class="doublon">
           <app-message-erreur [messages]="[reponse.message]" type="avertissement" />
           <p>
-            Le contenu correspond à un dossier déjà suivi. Consultez-le avant de
-            poursuivre l’enquête.
+            Le contenu correspond à un dossier déjà suivi. Consultez-le avant de poursuivre
+            l’enquête.
           </p>
           <a class="bouton bouton--petit" [routerLink]="['/rumeurs', reponse.rumeur.id]">
             Ouvrir le dossier existant
@@ -58,6 +57,7 @@
             id="titre"
             type="text"
             formControlName="titre"
+            maxlength="200"
             placeholder="Ex. Une pénurie de carburant annoncée pour lundi"
           />
           @if (titre.touched && titre.hasError('required')) {
@@ -65,6 +65,9 @@
           }
           @if (titre.touched && titre.hasError('minlength')) {
             <span class="champ__erreur">Le titre doit contenir au moins 5 caractères.</span>
+          }
+          @if (titre.touched && titre.hasError('maxlength')) {
+            <span class="champ__erreur">Le titre ne doit pas dépasser 200 caractères.</span>
           }
         </div>
 

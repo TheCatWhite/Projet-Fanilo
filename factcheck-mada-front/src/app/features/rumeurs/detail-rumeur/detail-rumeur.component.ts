@@ -55,16 +55,12 @@ export class ComposantDetailRumeur {
 
   readonly premierePublication = computed(
     () =>
-      this.rumeur()?.publications.find(
-        (publication) => publication.est_premiere_detection,
-      ) ?? null,
+      this.rumeur()?.publications.find((publication) => publication.est_premiere_detection) ?? null,
   );
 
   readonly publicationsTriees = computed(() =>
     [...(this.rumeur()?.publications ?? [])].sort(
-      (a, b) =>
-        new Date(a.date_publication).getTime() -
-        new Date(b.date_publication).getTime(),
+      (a, b) => new Date(a.date_publication).getTime() - new Date(b.date_publication).getTime(),
     ),
   );
 

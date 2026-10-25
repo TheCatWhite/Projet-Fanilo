@@ -81,7 +81,10 @@
                     <span>Indice : {{ rumeur.score_credibilite }}/100</span>
                   }
                 </div>
-                <a class="bouton bouton--secondaire bouton--petit" [routerLink]="['/rumeurs', rumeur.id]">
+                <a
+                  class="bouton bouton--secondaire bouton--petit"
+                  [routerLink]="['/rumeurs', rumeur.id]"
+                >
                   Consulter le dossier
                 </a>
               </footer>

@@ -12,15 +12,10 @@ export class ServiceAnalyse {
   private readonly urlRumeurs = `${environment.apiUrl}rumeurs`;
 
   analyserTexte(rumeurId: number): Observable<AnalyseTexte> {
-    return this.http.post<AnalyseTexte>(
-      `${this.urlRumeurs}/${rumeurId}/analyser-texte/`,
-      {},
-    );
+    return this.http.post<AnalyseTexte>(`${this.urlRumeurs}/${rumeurId}/analyser-texte/`, {});
   }
 
   obtenirArbrePropagation(rumeurId: number): Observable<ArbrePropagation> {
-    return this.http.get<ArbrePropagation>(
-      `${this.urlRumeurs}/${rumeurId}/arbre-propagation/`,
-    );
+    return this.http.get<ArbrePropagation>(`${this.urlRumeurs}/${rumeurId}/arbre-propagation/`);
   }
 }

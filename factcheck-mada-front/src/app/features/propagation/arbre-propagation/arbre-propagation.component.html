@@ -3,9 +3,7 @@
     <header class="entete-page">
       <div>
         <h1>Propagation</h1>
-        <p class="sous-titre">
-          Chronologie des publications documentées et similarités calculées.
-        </p>
+        <p class="sous-titre">Chronologie des publications documentées et similarités calculées.</p>
       </div>
       <div class="entete-page__actions">
         <a class="bouton bouton--secondaire" [routerLink]="['/rumeurs', rumeurId]">
@@ -55,9 +53,7 @@
           <div class="propagation__titre">
             <div>
               <h2>Chronologie</h2>
-              <p class="petit-texte">
-                Les étapes sont ordonnées par date de publication.
-              </p>
+              <p class="petit-texte">Les étapes sont ordonnées par date de publication.</p>
             </div>
           </div>
 
@@ -110,8 +106,7 @@
                       </p>
                     } @else {
                       <p class="chronologie__similarite">
-                        Aucun lien de similarité calculé avec une publication
-                        antérieure.
+                        Aucun lien de similarité calculé avec une publication antérieure.
                       </p>
                     }
 
@@ -121,7 +116,7 @@
                           <a
                             [href]="noeud.url_publication"
                             target="_blank"
-                            rel="noopener"
+                            rel="noopener noreferrer"
                           >
                             Ouvrir la publication
                           </a>
@@ -178,8 +173,8 @@
           <section class="panneau propagation__note">
             <strong>Lecture des liens</strong>
             <p>
-              Une similarité élevée signale une reprise probable du même texte.
-              Ce n’est ni une preuve de coordination ni un verdict sur le fond.
+              Une similarité élevée signale une reprise probable du même texte. Ce n’est ni une
+              preuve de coordination ni un verdict sur le fond.
             </p>
           </section>
 
@@ -188,7 +183,8 @@
               <h2>Source Zéro</h2>
               <p class="petit-texte">Première occurrence détectée.</p>
               <p class="propagation__source">
-                <strong>{{ source.nom_auteur }}</strong><br />
+                <strong>{{ source.nom_auteur }}</strong
+                ><br />
                 {{ source.plateforme_libelle }} ·
                 {{ source.date_publication | dateFrancaise: true }}
               </p>

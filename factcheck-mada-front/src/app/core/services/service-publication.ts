@@ -17,9 +17,7 @@ export class ServicePublication {
   private readonly urlPublications = `${environment.apiUrl}publications`;
 
   obtenirPublications(rumeurId: number): Observable<PublicationSource[]> {
-    return this.http.get<PublicationSource[]>(
-      `${this.urlRumeurs}/${rumeurId}/publications/`,
-    );
+    return this.http.get<PublicationSource[]>(`${this.urlRumeurs}/${rumeurId}/publications/`);
   }
 
   ajouterPublication(
@@ -61,11 +59,7 @@ export class ServicePublication {
       formulaire.append('texte_brut', donnees.texte_brut.trim());
     }
     if (donnees.capture_ecran) {
-      formulaire.append(
-        'capture_ecran',
-        donnees.capture_ecran,
-        donnees.capture_ecran.name,
-      );
+      formulaire.append('capture_ecran', donnees.capture_ecran, donnees.capture_ecran.name);
     }
 
     return formulaire;

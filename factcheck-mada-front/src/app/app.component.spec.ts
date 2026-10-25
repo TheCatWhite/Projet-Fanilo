@@ -1,23 +1,35 @@
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
-import { App } from './app.component';
+import { provideRouter } from '@angular/router';
 
-describe('App', () => {
+import { ComposantApplication } from './app.component';
+
+describe('ComposantApplication', () => {
   beforeEach(async () => {
+    localStorage.clear();
     await TestBed.configureTestingModule({
-      imports: [App],
+      imports: [ComposantApplication],
+      providers: [provideRouter([]), provideHttpClient(), provideHttpClientTesting()],
     }).compileComponents();
   });
 
-  it('should create the app', () => {
-    const fixture = TestBed.createComponent(App);
-    const app = fixture.componentInstance;
-    expect(app).toBeTruthy();
+  afterEach(() => {
+    localStorage.clear();
   });
 
-  it('should render title', async () => {
-    const fixture = TestBed.createComponent(App);
+  it('crée la coquille de l’application', () => {
+    const fixture = TestBed.createComponent(ComposantApplication);
+    expect(fixture.componentInstance).toBeTruthy();
+  });
+
+  it('n’affiche pas la navigation sans authentification', async () => {
+    const fixture = TestBed.createComponent(ComposantApplication);
     await fixture.whenStable();
-    const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('h1')?.textContent).toContain('Hello, factcheck-mada-front');
+    fixture.detectChanges();
+
+    const element = fixture.nativeElement as HTMLElement;
+    expect(element.querySelector('app-barre-navigation')).toBeNull();
+    expect(element.querySelector('router-outlet')).toBeTruthy();
   });
 });

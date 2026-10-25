@@ -10,12 +10,7 @@ import { ComposantMessageErreur } from '../../../shared/composants/message-erreu
 @Component({
   selector: 'app-connexion',
   standalone: true,
-  imports: [
-    ReactiveFormsModule,
-    RouterLink,
-    ComposantChargeur,
-    ComposantMessageErreur,
-  ],
+  imports: [ReactiveFormsModule, RouterLink, ComposantChargeur, ComposantMessageErreur],
   templateUrl: './connexion.component.html',
   styleUrl: './connexion.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -52,20 +47,20 @@ export class ComposantConnexion {
     }
 
     this.chargement.set(true);
-    this.serviceAuthentification
-      .connexion(this.formulaire.getRawValue())
-      .subscribe({
-        next: () => {
-          const retour = this.route.snapshot.queryParamMap.get('retour');
-          const destination =
-            retour && retour.startsWith('/') ? retour : '/tableau-de-bord';
-          void this.routeur.navigateByUrl(destination);
-        },
-        error: (erreur: unknown) => {
-          this.messagesErreur.set(this.serviceErreur.extraireMessages(erreur));
-          this.chargement.set(false);
-        },
-        complete: () => this.chargement.set(false),
-      });
+    this.serviceAuthentification.connexion(this.formulaire.getRawValue()).subscribe({
+      next: () => {
+        const retour = this.route.snapshot.queryParamMap.get('retour');
+        const destination =
+          retour && retour.startsWith('/') && !retour.startsWith('//')
+            ? retour
+            : '/tableau-de-bord';
+        void this.routeur.navigateByUrl(destination);
+      },
+      error: (erreur: unknown) => {
+        this.messagesErreur.set(this.serviceErreur.extraireMessages(erreur));
+        this.chargement.set(false);
+      },
+      complete: () => this.chargement.set(false),
+    });
   }
 }

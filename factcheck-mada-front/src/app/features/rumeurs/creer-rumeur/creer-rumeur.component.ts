@@ -15,12 +15,7 @@ import { ComposantMessageErreur } from '../../../shared/composants/message-erreu
 @Component({
   selector: 'app-creer-rumeur',
   standalone: true,
-  imports: [
-    ReactiveFormsModule,
-    RouterLink,
-    ComposantChargeur,
-    ComposantMessageErreur,
-  ],
+  imports: [ReactiveFormsModule, RouterLink, ComposantChargeur, ComposantMessageErreur],
   templateUrl: './creer-rumeur.component.html',
   styleUrl: './creer-rumeur.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
