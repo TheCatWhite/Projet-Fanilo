@@ -1,0 +1,229 @@
+<section class="page">
+  <div class="conteneur">
+    <header class="entete-page">
+      <div>
+        <h1>Fiche de vérification</h1>
+        <p class="sous-titre">
+          Synthèse du dossier, des alertes et des recommandations pour la rédaction.
+        </p>
+      </div>
+      <div class="entete-page__actions">
+        <a class="bouton bouton--secondaire" [routerLink]="['/rumeurs', rumeurId]">
+          Retour au dossier
+        </a>
+        <a class="bouton bouton--secondaire" [routerLink]="['/rumeurs', rumeurId, 'propagation']">
+          Propagation
+        </a>
+        <a class="bouton bouton--secondaire" [routerLink]="['/rumeurs', rumeurId, 'publications', 'ajouter']">
+          Ajouter une publication
+        </a>
+        <button class="bouton" type="button" [disabled]="generation()" (click)="genererRapport()">
+          {{ generation() ? 'Génération…' : (rapport() ? 'Regénérer la fiche' : 'Générer la fiche') }}
+        </button>
+      </div>
+    </header>
+
+    @if (messagesErreur().length > 0) {
+      <app-message-erreur [messages]="messagesErreur()" type="erreur" />
+    }
+    @if (messagesSucces().length > 0) {
+      <app-message-erreur [messages]="messagesSucces()" type="succes" />
+    }
+
+    @if (chargement()) {
+      <app-chargeur message="Chargement de la fiche…" />
+    } @else if (rumeur(); as dossier) {
+      @if (rapport(); as fiche) {
+        <section class="rapport__couverture">
+          <div class="rapport__jauge" [style.background]="jauge()">
+            <div class="rapport__jauge-interne">
+              <strong>{{ fiche.score_credibilite }}</strong>
+              <span>/100</span>
+              <small>Indice de crédibilité</small>
+            </div>
+          </div>
+
+          <div class="rapport__synthese">
+            <p class="rapport__surtitre">Synthèse du dossier</p>
+            <h2>{{ dossier.titre }}</h2>
+            <div class="rapport__etiquettes">
+              <span [class]="'badge-statut badge-statut--' + dossier.statut">
+                {{ dossier.statut_libelle }}
+              </span>
+              <app-badge-risque
+                [niveau]="fiche.niveau_risque"
+                [libelle]="fiche.niveau_risque_libelle"
+              />
+              <span class="rapport__date">Généré le {{ fiche.genere_le | dateFrancaise: true }}</span>
+            </div>
+            <p class="rapport__mention">
+              <strong>Analyse automatique — vérification humaine requise.</strong>
+              Cette fiche ne conclut pas à la véracité de l’affirmation.
+            </p>
+          </div>
+        </section>
+
+        <div class="rapport__grille">
+          <div class="rapport__principal">
+            <section class="panneau">
+              <h2>Résumé</h2>
+              <p class="texte-avec-retour">{{ fiche.resume }}</p>
+            </section>
+
+            <section class="panneau">
+              <h2>Recommandations éditoriales</h2>
+              @if (fiche.recommandations.length === 0) {
+                <app-etat-vide message="Aucune recommandation particulière." />
+              } @else {
+                <ol class="rapport__recommandations">
+                  @for (recommandation of fiche.recommandations; track $index) {
+                    <li>{{ recommandation }}</li>
+                  }
+                </ol>
+              }
+            </section>
+
+            <section class="panneau">
+              <div class="rapport__titre-section">
+                <div>
+                  <h2>Alertes textuelles</h2>
+                  <p class="petit-texte">Signaux automatiques à interpréter avec prudence.</p>
+                </div>
+                <span class="rapport__compteur">{{ dossier.alertes_texte.length }}</span>
+              </div>
+
+              @if (dossier.alertes_texte.length === 0) {
+                <app-etat-vide message="Aucune alerte textuelle dans ce dossier." />
+              } @else {
+                <div class="liste-cartes">
+                  @for (alerte of dossier.alertes_texte; track alerte.id) {
+                    <app-carte-alerte
+                      [typeLibelle]="alerte.type_libelle"
+                      [gravite]="alerte.gravite"
+                      [description]="alerte.explication"
+                      [expression]="alerte.expression_detectee"
+                    />
+                  }
+                </div>
+              }
+            </section>
+
+            <section class="panneau">
+              <h2>Chronologie résumée</h2>
+              @if (noeudsTries().length === 0) {
+                <app-etat-vide message="Aucune publication documentée." />
+              } @else {
+                <div class="rapport__chronologie">
+                  @for (noeud of noeudsTries(); track noeud.id) {
+                    <div class="rapport__chronologie-ligne">
+                      <span class="rapport__chronologie-point" aria-hidden="true"></span>
+                      <div>
+                        <strong>{{ noeud.nom_auteur }}</strong>
+                        <span>
+                          {{ noeud.plateforme_libelle }} ·
+                          {{ noeud.date_publication | dateFrancaise: true }}
+                        </span>
+                      </div>
+                      @if (noeud.est_premiere_detection) {
+                        <app-badge-source-zero />
+                      }
+                    </div>
+                  }
+                </div>
+              }
+            </section>
+          </div>
+
+          <aside class="rapport__aside">
+            <section class="panneau">
+              <h2>Téléchargements</h2>
+              <p class="petit-texte">
+                Les fichiers sont générés par le backend et téléchargés avec
+                l’authentification active.
+              </p>
+              <div class="rapport__telechargements">
+                <button
+                  class="bouton"
+                  type="button"
+                  [disabled]="telechargementPdf()"
+                  (click)="telechargerPdf()"
+                >
+                  {{ telechargementPdf() ? 'Téléchargement…' : 'Télécharger le PDF' }}
+                </button>
+                <button
+                  class="bouton bouton--secondaire"
+                  type="button"
+                  [disabled]="telechargementImage()"
+                  (click)="telechargerImage()"
+                >
+                  {{ telechargementImage() ? 'Téléchargement…' : 'Télécharger l’image' }}
+                </button>
+              </div>
+            </section>
+
+            <section class="panneau">
+              <h2>Source Zéro</h2>
+              @if (premierePublication(); as source) {
+                <app-carte-publication [publication]="source" />
+              } @else {
+                <app-etat-vide message="Aucune Source Zéro identifiée." />
+              }
+            </section>
+
+            <section class="panneau">
+              <h2>Informations</h2>
+              <dl class="rapport__metadonnees">
+                <div>
+                  <dt>Score de crédibilité</dt>
+                  <dd>{{ fiche.score_credibilite }}/100</dd>
+                </div>
+                <div>
+                  <dt>Niveau de risque</dt>
+                  <dd>{{ fiche.niveau_risque_libelle }}</dd>
+                </div>
+                <div>
+                  <dt>Publications</dt>
+                  <dd>{{ dossier.nombre_publications }}</dd>
+                </div>
+                <div>
+                  <dt>Créé par</dt>
+                  <dd>{{ dossier.cree_par_nom }}</dd>
+                </div>
+                <div>
+                  <dt>Dossier créé le</dt>
+                  <dd>{{ dossier.cree_le | dateFrancaise }}</dd>
+                </div>
+              </dl>
+            </section>
+          </aside>
+        </div>
+      } @else {
+        <div class="panneau">
+          <div class="rapport__sans-fiche">
+            <div>
+              <h2>Aucune fiche générée</h2>
+              <p class="texte-secondaire">
+                Générez une fiche pour analyser le texte du dossier, les comptes
+                et la propagation, puis produire une synthèse téléchargeable.
+              </p>
+              <p class="rapport__mention">
+                <strong>Analyse automatique — vérification humaine requise.</strong>
+              </p>
+            </div>
+            <button class="bouton" type="button" [disabled]="generation()" (click)="genererRapport()">
+              {{ generation() ? 'Génération…' : 'Générer la fiche' }}
+            </button>
+          </div>
+
+          @if (premierePublication(); as source) {
+            <hr class="ligne-rupture" />
+            <h3>Source Zéro déjà identifiée</h3>
+            <app-carte-publication [publication]="source" />
+          }
+        </div>
+      }
+    } @else if (messagesErreur().length === 0) {
+      <app-etat-vide message="Ce dossier est introuvable." />
+    }
+  </div>
+</section>

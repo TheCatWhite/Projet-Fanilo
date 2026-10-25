@@ -1,0 +1,260 @@
+.rapport__couverture {
+  display: flex;
+  align-items: center;
+  gap: clamp(1rem, 4vw, 2.5rem);
+  margin-bottom: 1rem;
+  border: 1px solid var(--couleur-bordure);
+  border-radius: var(--rayon);
+  padding: clamp(1rem, 3vw, 1.6rem);
+  background: linear-gradient(110deg, #fff, var(--couleur-bleu-clair));
+  box-shadow: var(--ombre);
+}
+
+.rapport__jauge {
+  display: grid;
+  flex: 0 0 auto;
+  place-items: center;
+  width: 9.5rem;
+  height: 9.5rem;
+  border-radius: 50%;
+}
+
+.rapport__jauge-interne {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 7.7rem;
+  height: 7.7rem;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: inset 0 0 0 1px var(--couleur-bordure);
+}
+
+.rapport__jauge-interne strong {
+  color: var(--couleur-bleu-fonce);
+  font-size: 2rem;
+  line-height: 1;
+}
+
+.rapport__jauge-interne span {
+  color: var(--couleur-texte-secondaire);
+  font-size: 0.78rem;
+}
+
+.rapport__jauge-interne small {
+  margin-top: 0.3rem;
+  color: var(--couleur-texte-secondaire);
+  font-size: 0.6rem;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.rapport__synthese {
+  min-width: 0;
+}
+
+.rapport__surtitre {
+  margin-bottom: 0.2rem;
+  color: var(--couleur-vert-fonce);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.rapport__synthese h2 {
+  margin-bottom: 0.5rem;
+  font-size: clamp(1.2rem, 2.5vw, 1.65rem);
+}
+
+.rapport__etiquettes {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  flex-wrap: wrap;
+}
+
+.rapport__date {
+  color: var(--couleur-texte-secondaire);
+  font-size: 0.76rem;
+}
+
+.rapport__mention {
+  margin: 0.7rem 0 0;
+  border-left: 3px solid var(--couleur-bleu);
+  padding: 0.4rem 0.7rem;
+  background: rgb(255 255 255 / 60%);
+  color: var(--couleur-texte-secondaire);
+  font-size: 0.8rem;
+}
+
+.rapport__mention strong {
+  color: var(--couleur-bleu-fonce);
+}
+
+.rapport__grille {
+  display: grid;
+  grid-template-columns: minmax(0, 1.6fr) minmax(250px, 0.7fr);
+  gap: 1rem;
+  align-items: start;
+}
+
+.rapport__principal,
+.rapport__aside {
+  display: grid;
+  gap: 1rem;
+}
+
+.rapport__recommandations {
+  display: grid;
+  gap: 0.5rem;
+  margin: 0;
+  padding-left: 1.2rem;
+}
+
+.rapport__recommandations li {
+  padding-left: 0.2rem;
+  color: var(--couleur-texte-secondaire);
+  font-size: 0.86rem;
+}
+
+.rapport__titre-section {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.rapport__titre-section h2 {
+  margin-bottom: 0.15rem;
+}
+
+.rapport__compteur {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.8rem;
+  height: 1.8rem;
+  border-radius: 999px;
+  background: var(--couleur-rouge-tres-clair);
+  color: var(--couleur-rouge-fonce);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.rapport__chronologie {
+  display: grid;
+  gap: 0;
+  margin-top: 0.5rem;
+}
+
+.rapport__chronologie-ligne {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.55rem 0 0.55rem 1.1rem;
+  border-bottom: 1px solid var(--couleur-bordure);
+}
+
+.rapport__chronologie-ligne:last-child {
+  border-bottom: 0;
+}
+
+.rapport__chronologie-point {
+  position: absolute;
+  left: 0;
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 50%;
+  background: var(--couleur-bleu);
+}
+
+.rapport__chronologie-ligne > div {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 0.1rem;
+  min-width: 0;
+}
+
+.rapport__chronologie-ligne strong {
+  color: var(--couleur-bleu-fonce);
+  font-size: 0.84rem;
+}
+
+.rapport__chronologie-ligne span:not(.rapport__chronologie-point):not(.badge-source) {
+  color: var(--couleur-texte-secondaire);
+  font-size: 0.74rem;
+}
+
+.rapport__telechargements {
+  display: grid;
+  gap: 0.6rem;
+  margin-top: 0.8rem;
+}
+
+.rapport__metadonnees {
+  display: grid;
+  gap: 0.6rem;
+  margin: 0;
+}
+
+.rapport__metadonnees div {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.7rem;
+  padding-bottom: 0.45rem;
+  border-bottom: 1px solid var(--couleur-bordure);
+}
+
+.rapport__metadonnees div:last-child {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+
+.rapport__metadonnees dt {
+  color: var(--couleur-texte-secondaire);
+  font-size: 0.76rem;
+}
+
+.rapport__metadonnees dd {
+  margin: 0;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-align: right;
+}
+
+.rapport__sans-fiche {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.rapport__sans-fiche h2 {
+  margin-bottom: 0.2rem;
+}
+
+.rapport__sans-fiche p {
+  max-width: 620px;
+  margin-bottom: 0.5rem;
+  font-size: 0.86rem;
+}
+
+@media (max-width: 900px) {
+  .rapport__grille {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 620px) {
+  .rapport__couverture {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}

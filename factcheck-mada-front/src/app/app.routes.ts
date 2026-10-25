@@ -65,6 +65,15 @@ export const routes: Routes = [
       ).then((module) => module.ComposantArbrePropagation),
   },
   {
+    path: 'rumeurs/:id/rapport',
+    title: 'Fiche de vérification | FactCheck Mada',
+    canActivate: [gardeAuthentification],
+    loadComponent: () =>
+      import(
+        './features/rapport/fiche-verification/fiche-verification.component'
+      ).then((module) => module.ComposantFicheVerification),
+  },
+  {
     path: 'rumeurs/:id',
     title: 'Dossier de rumeur | FactCheck Mada',
     canActivate: [gardeAuthentification],
